@@ -1,0 +1,2702 @@
+ABSTRACT
+The promise of data-driven decision-making is now being recognized broadly, and there is growing enthusiasm for the notion of ¡°Big Data,¡± including the recent announcement from the White House about new funding initiatives across different agencies, that target research for Big Data. While the promise of Big Data is real ? for example, it is estimated that Google alone contributed 54 billion dollars to the US economy in 2009 ? there is no clear consensus on what is Big Data. In fact, there have been many controversial statements about Big Data, such as ¡°Size is the only thing that matters.¡± In this panel we will try to explore the controversies and debunk the myths surrounding Big Data.
+1. INTRODUCTION It is hard to avoid mention of Big Data anywhere we turn today. There is broad recognition of the value of data, and products obtained through analyzing it [1]. Popular news media now appreciates the value of Big Data as evidenced by coverage in the Economist [2, 3], the New York Times [5], and National Public Radio [7, 8]. Industry is abuzz with the promise of Big Data [6]. Government agencies have recently announced signi?cant programs towards addressing challenges of Big Data1. Yet, many have a very narrow interpretation of what that means, and we lose track of the fact that there are multiple steps to the data analysis pipeline, whether the data are big or small. At each step, there is work to be done, and there are challenges with Big Data. The ?rst step is data acquisition. Some data sources, such as sensor networks, can produce staggering amounts of raw data. Much of this data is of no interest, and it can be ?ltered and compressed by orders of magnitude. One challenge is to de?ne these ?lters in such a way that they do not discard useful information. For example, in considering news reports, is it enough to retain only those that mention the name of a company of interest? Do we need the full report, or just a snippet around the mentioned name? The second big challenge is to automatically generate the right metadata
+1http://www.whitehouse.gov/blog/2012/03/29/big-data-big-deal
+to describe what data is recorded and how it is recorded and measured. This metadata is likely to be crucial to downstream analysis. For example, we may need to know the source for each report if we wish to examine duplicates. Frequently, the information collected will not be in a format ready for analysis. The second step is an information extraction process that pulls out the required information from the underlying sources and expresses it in a structured form suitable for analysis. A news report will get reduced to a concrete structure, such as a set of tuples, or even a single class label, to facilitate analysis. Furthermore, we are used to thinking of Big Data as always telling us the truth, but this is actually far from reality. We have to deal with erroneous data: some news reports are inaccurate. Data analysis is considerably more challenging than simply locating, identifying, understanding, and citing data. For effective large-scale analysis all of this has to happen in a completely automated manner. This requires differences in data structure and semantics to be expressed in forms that are computer understandable, and then robotically resolvable. Even for simpler analyses that depend on only one data set, there remains an important question of suitable database design. Usually, there will be many alternative ways in which to store the same information. Certain designs will have advantages over others for certain purposes, and possibly drawbacks for other purposes. Mining requires integrated, cleaned, trustworthy, and ef?ciently accessible data, declarative query and mining interfaces, scalable mining algorithms, and Big Data computing environments. A problem with current Big Data analysis is the lack of coordination between database systems, which host the data and provide SQL querying, with analytics packages that perform various forms of nonSQL processing, such as data mining and statistical analyses. Today¡¯s analysts are impeded by a tedious process of exporting data from the database, performing a non-SQL process and bringing the data back. Having the ability to analyze Big Data is of limited value if users cannot understand the analysis. Ultimately, a decision-maker, provided with the result of analysis, has to interpret these results. Usually, this involves examining all the assumptions made and retracing the analysis. Furthermore, as we saw above, there are many possible sources of error: computer systems can have bugs, models almost always have assumptions, and results can be based on erroneous data. For all of these reasons, users will try to understand, and verify, the results produced by the computer. The computer system must make it easy for her to do so by providing supplementary information that explains how each result was derived, and based upon precisely what inputs. In short, there is a multi-step pipeline required to extract value from data. Heterogeneity, incompleteness, scale, timeliness, pri
+2032
+Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for pro?t or commercial advantage and that copies bear this notice and the full citation on the ?rst page. To copy otherwise, to republish,topostonserversortoredistributetolists,requirespriorspeci?c permission and/or a fee. Articles from this volume were invited to present theirresultsatThe38thInternationalConferenceonVeryLargeDataBases, August 27th - 31st 2012, Istanbul, Turkey. Proceedings of the VLDB Endowment, Vol. 5, No. 12 Copyright 2012 VLDB Endowment 2150-8097/12/08... $ 10.00.
+vacy and process complexity give rise to challenges at all phases of the pipeline. Furthermore, this pipeline is not a simple linear ?ow ? rather there are frequent loops back as downstream steps suggest changes to upstream steps. There is more than enough here that we in the database research community can work on [4].
+2. PANEL GOALS The panel has multiple goals. First of all, to identify if/why Big Data is different from past Very Large DataBase techniques and what are the most challenging aspects of Big Data. Secondly, to determine how can the (data management) industry and academia collaborate towards solving Big Data challenges. Finally, to consider the role of the data management community within the Big Data solutions ¡°ecosystem.¡± In order to address these goals, the panel will discuss the validity of the following claims:
+? Big Data is the same as scalable analytics.
+? Big Data problems are primarily at the application side.
+? Big Data problems are primarily at the systems level.
+? Big Data requires a cloud-based platform.
+? The Data Management community is in danger of missing the Big Data train.
+? It is not possible to conduct Big Data research effectively without collaborating with people outside the data management community.
+? All the Big Data problems can be reduced to Map/Reduce problems.
+? The bulk of Big Data challenges are being addressed by industry.
+? The bulk of Big Data challenges are at the implementation level.
+? Size is the only thing that matters (for Big Data).
+3. PANEL COMPOSITION
+3.1 Moderators
+Alexandros Labrinidis is an associate professor at the Department of Computer Science of the University of Pittsburgh and codirector of the Advanced Data Management Technologies Lab. He is also an adjunct associate professor at Carnegie Mellon University (CS Dept). He is currently the Secretary/Treasurer for ACM SIGMOD, and has served as the Editor of SIGMOD Record. He is the recipient of an NSF CAREER award in 2008.
+H. V. Jagadish is Bernard A Galler Collegiate Professor of Electrical Engineering and Computer Science, and Director of the Software Systems Research Laboratory, at the University of Michigan in Ann Arbor. He is a fellow of the ACM, serves on the board of the Computing Research Association, and is Founding Editor-in-Chief of the Proceedings of the VLDB Endowment (since 2008).
+3.2 Panelists
+Susan Davidson, Weiss Professor and Chair, Department of Computer and Information Science, Founding Co-Director Center for Bioinformatics, and previously Deputy Dean, School of Engineering and Applied Sciences, all at the University of Pennsylvania. Also co-Founder, Greater Philadelphia Bioinformatics Alliance.
+Johannes Gehrke, Tisch University Professor, Department of Computer Sciences, Cornell University. He has received the Cornell University Provost¡¯s Award for Distinguished Scholarship, a Humboldt Research Award from the Alexander von Humboldt Foundation, the 2011 IEEE Computer Society Technical Achievement Award, and the 2011 Blavatnik Award for Young Scientists from the New York Academy of Sciences.
+Nick Koudas, Professor, Department of Computer Science, University of Toronto and President & Co-founder, Sysomos. He was named 2011 Inventor of the year by the University of Toronto.
+Raghu Ramakrishnan, Technical Fellow; CTO, Information Services; Director, Cloud and Information Services Lab, Microsoft. He received the ACM SIGKDD Innovation Award in 2008 and the ACM SIGMOD Contributions Award in 1999. He was elected Fellow of the ACM in 2001 and Fellow of the IEEE in 2008.
+
+-----------------------------------------
+
+Abstract: Big Data concerns large-volume, complex, growing data sets with multiple, autonomous
+sources. With the fast development of networking, data storage, and the data collection capacity, Big Data
+is now rapidly expanding in all science and engineering domains, including physical, biological and biomedical
+sciences. This article presents a HACE theorem that characterizes the features of the Big Data
+revolution, and proposes a Big Data processing model, from the data mining perspective. This data-driven
+model involves demand-driven aggregation of information sources, mining and analysis, user interest
+modeling, and security and privacy considerations. We analyze the challenging issues in the data-driven
+model and also in the Big Data revolution.
+1. Introduction
+Dr. Yan Mo won the 2012 Nobel Prize in Literature. This is probably the most controversial Nobel prize
+of this category, as Mo speaks Chinese, lives in a socialist country, and has the Chinese government¡¯s
+support. Searching on Google with ¡°Yan Mo Nobel Prize¡±, we get 1,050,000 web pointers on the Internet
+(as of January 3, 2013). ¡°For all praises as well as criticisms,¡± said Mo recently, ¡°I am grateful.¡± What
+types of praises and criticisms has Mo actually received over his 31-year writing career? As comments
+keep coming on the Internet and in various news media, can we summarize all types of opinions in
+different media in a real-time fashion, including updated, cross-referenced discussions by critics? This
+type of summarization program is an excellent example for Big Data processing, as the information comes
+from multiple, heterogeneous, autonomous sources with complex and evolving relationships, and keeps
+growing.
+Along with the above example, the era of Big Data has arrived (Nature Editorial 2008; Mervis J.
+2012; Labrinidis and Jagadish 2012). Every day, 2.5 quintillion bytes of data are created and 90% of the 
+2
+data in the world today were produced within the past two years (IBM 2012). Our capability for data
+generation has never been so powerful and enormous ever since the invention of the Information
+Technology in the early 19th century. As another example, on October 4, 2012, the first presidential
+debate between President Barack Obama and Governor Mitt Romney triggered more than 10 million
+tweets within two hours (Twitter Blog 2012). Among all these tweets, the specific moments that
+generated the most discussions actually revealed the public interests, such as the discussions about
+Medicare and vouchers. Such online discussions provide a new means to sense the public interests and
+generate feedback in real-time, and are mostly appealing compared to generic media, such as radio or TV
+broadcasting. Another example is Flickr, a public picture sharing site, which received 1.8 million photos
+per day, on average, from February to March 2012 (Michel F. 2012). Assuming the size of each photo is 2
+megabytes (MB), this resulted in 3.6 terabytes (TB) storage every single day. As ¡°a picture is worth a
+thousand words¡±, the billions of pictures on Flicker are a treasure tank for us to explore the human society,
+social events, public affairs, disasters etc., only if we have the power to harness the enormous amount of
+data.
+The above examples demonstrate the rise of Big Data applications where data collection has grown
+tremendously and is beyond the ability of commonly used software tools to capture, manage, and process
+within a ¡°tolerable elapsed time¡±. The most fundamental challenge for the Big Data applications is to
+explore the large volumes of data and extract useful information or knowledge for future actions
+(Rajaraman and Ullman, 2011). In many situations, the knowledge extraction process has to be very
+efficient and close to real-time because storing all observed data is nearly infeasible. For example, the
+Square Kilometer Array (SKA) (Dewdney et al. 2009) in Radio Astronomy consists of 1,000 to 1,500 15-
+meter dishes in a central 5km area. It provides 100 times more sensitive vision than any existing radio
+telescopes, answering fundamental questions about the Universe. However, with a 40
+gigabytes(GB)/second data volume, the data generated from the SKA is exceptionally large. Although
+researchers have confirmed that interesting patterns, such as transient radio anomalies (Reed et al. 2011)
+can be discovered from the SKA data, existing methods are incapable of handling this Big Data. As a
+result, the unprecedented data volumes require an effective data analysis and prediction platform to
+achieve fast-response and real-time classification for such Big Data.
+3
+The remainder of the paper is structured as follows. In Section 2, we propose a HACE theorem to
+model Big Data characteristics. Section 3 summarizes the key challenges for Big Data mining. Some key
+research initiatives and the authors¡¯ national research projects in this field are outlined in Section 4.
+Related work is discussed in Section 5, and we conclude the paper in Section 6.
+Figure 1: The blind men and the giant elephant: the localized (limited) view of each blind man leads to a biased conclusion.
+2. Big Data Characteristics: HACE Theorem
+HACE Theorem: Big Data starts with large-volume, heterogeneous, autonomous sources with
+distributed and decentralized control, and seeks to explore complex and evolving relationships among
+data.
+These characteristics make it an extreme challenge for discovering useful knowledge from the Big
+Data. In a naive sense, we can imagine that a number of blind men are trying to size up a giant elephant
+(see Figure 1), which will be the Big Data in this context. The goal of each blind man is to draw a picture
+(or conclusion) of the elephant according to the part of information he collected during the process.
+Because each person¡¯s view is limited to his local region, it is not surprising that the blind men will each
+conclude independently that the elephant ¡°feels¡± like a rope, a hose, or a wall, depending on the region
+each of them is limited to. To make the problem even more complicated, let¡¯s assume that (a) the elephant
+is growing rapidly and its pose also changes constantly, and (b) the blind men also learn from each other
+while exchanging information on their respective feelings on the elephant. Exploring the Big Data in this 
+4
+scenario is equivalent to aggregating heterogeneous information from different sources (blind men) to
+help draw a best possible picture to reveal the genuine gesture of the elephant in a real-time fashion.
+Indeed, this task is not as simple as asking each blind man to describe his feelings about the elephant and
+then getting an expert to draw one single picture with a combined view, concerning that each individual
+may speak a different language (heterogeneous and diverse information sources) and they may even have
+privacy concerns about the messages they deliberate in the information exchange process.
+2.1 Huge Data with Heterogeneous and Diverse Dimensionality
+One of the fundamental characteristics of the Big Data is the huge volume of data represented by
+heterogeneous and diverse dimensionalities. This is because different information collectors use their own
+schemata for data recording, and the nature of different applications also results in diverse representations
+of the data. For example, each single human being in a bio-medical world can be represented by using
+simple demographic information such as gender, age, family disease history etc. For X-ray examination
+and CT scan of each individual, images or videos are used to represent the results because they provide
+visual information for doctors to carry detailed examinations. For a DNA or genomic related test,
+microarray expression images and sequences are used to represent the genetic code information because
+this is the way that our current techniques acquire the data. Under such circumstances, the heterogeneous
+features refer to the different types of representations for the same individuals, and the diverse features
+refer to the variety of the features involved to represent each single observation. Imagine that different
+organizations (or health practitioners) may have their own schemata to represent each patient, the data
+heterogeneity and diverse dimensionality issues become major challenges if we are trying to enable data
+aggregation by combining data from all sources.
+2.2 Autonomous Sources with Distributed and Decentralized Control
+Autonomous data sources with distributed and decentralized controls are a main characteristic of Big Data
+applications. Being autonomous, each data sources is able to generate and collect information without
+involving (or relying on) any centralized control. This is similar to the World Wide Web (WWW) setting
+where each web server provides a certain amount of information and each server is able to fully function 
+5
+without necessarily relying on other servers. On the other hand, the enormous volumes of the data also
+make an application vulnerable to attacks or malfunctions, if the whole system has to rely on any
+centralized control unit. For major Big Data related applications, such as Google, Flicker, Facebook, and
+Walmart, a large number of server farms are deployed all over the world to ensure nonstop services and
+quick responses for local markets. Such autonomous sources are not only the solutions of the technical
+designs, but also the results of the legislation and the regulation rules in different countries/regions. For
+example, Asian markets of Walmart are inherently different from its North American markets in terms of
+seasonal promotions, top sell items, and customer behaviors. More specifically, the local government
+regulations also impact on the wholesale management process and eventually result in data
+representations and data warehouses for local markets.
+2.3 Complex and Evolving Relationships
+While the volume of the Big Data increases, so do the complexity and the relationships underneath the
+data. In an early stage of data centralized information systems, the focus is on finding best feature values
+to represent each observation. This is similar to using a number of data fields, such as age, gender, income,
+education background etc., to characterize each individual. This type of sample-feature representation
+inherently treats each individual as an independent entity without considering their social connections
+which is one of the most important factors of the human society. People form friend circles based on their
+common hobbies or connections by biological relationships. Such social connections commonly exist in
+not only our daily activities, but also are very popular in virtual worlds. For example, major social
+network sites, such as Facebook or Twitter, are mainly characterized by social functions such as friendconnections
+and followers (in Twitter). The correlations between individuals inherently complicate the
+whole data representation and any reasoning process. In the sample-feature representation, individuals are
+regarded similar if they share similar feature values, whereas in the sample-feature-relationship
+representation, two individuals can be linked together (through their social connections) even though they
+might share nothing in common in the feature domains at all. In a dynamic world, the features used to
+represent the individuals and the social ties used to represent our connections may also evolve with
+respect to temporal, spatial, and other factors. Such a complication is becoming part of the reality for Big 
+6
+Data applications, where the key is to take the complex (non-linear, many-to-many) data relationships,
+along with the evolving changes, into consideration, to discover useful patterns from Big Data collections.
+Figure 2: A Big Data processing framework: The research challenges form a three tier structure and
+center around the ¡°Big Data mining platform¡± (Tier I), which focuses on low-level data accessing and
+computing. Challenges on information sharing and privacy, and Big Data application domains and
+knowledge form Tier II, which concentrates on high level semantics, application domain knowledge,
+and user privacy issues. The outmost circle shows Tier III challenges on actual mining algorithms.
+3. Data Mining Challenges with Big Data
+For an intelligent learning database system (Wu 2000) to handle Big Data, the essential key is to scale up
+to the exceptionally large volume of data and provide treatments for the characteristics featured by the
+aforementioned HACE theorem. Figure 2 shows a conceptual view of the Big Data processing framework,
+which includes three tiers from inside out with considerations on data accessing and computing (Tier I),
+data privacy and domain knowledge (Tier II), and Big Data mining algorithms (Tier III).
+The challenges at Tier I focus on data accessing and actual computing procedures. Because Big Data
+are often stored at different locations and data volumes may continuously grow, an effective computing
+platform will have to take distributed large-scale data storage into consideration for computing. For 
+7
+example, while typical data mining algorithms require all data to be loaded into the main memory, this is
+becoming a clear technical barrier for Big Data because moving data across different locations is
+expensive (e.g., subject to intensive network communication and other IO costs), even if we do have a
+super large main memory to hold all data for computing.
+The challenges at Tier II center around semantics and domain knowledge for different Big Data
+applications. Such information can provide additional benefits to the mining process, as well as add
+technical barriers to the Big Data access (Tier I) and mining algorithms (Tier III). For example, depending
+on different domain applications, the data privacy and information sharing mechanisms between data
+producers and data consumers can be significantly different. Sharing sensor network data for applications
+like water quality monitoring may not be discouraged, whereas releasing and sharing mobile users¡¯
+location information is clearly not acceptable for majority, if not all, applications. In addition to the above
+privacy issues, the application domains can also provide additional information to benefit or guide Big
+Data mining algorithm designs. For example, in market basket transactions data, each transaction is
+considered independent and the discovered knowledge is typically represented by finding highly
+correlated items, possibly with respect to different temporal and/or spatial restrictions. In a social network,
+on the other hand, users are linked and share dependency structures. The knowledge is then represented
+by user communities, leaders in each group, and social influence modeling etc. Therefore, understanding
+semantics and application knowledge is important for both low-level data access and for high level
+mining algorithm designs.
+At Tier III, the data mining challenges concentrate on algorithm designs in tackling the difficulties
+raised by the Big Data volumes, distributed data distributions, and by complex and dynamic data
+characteristics. The circle at Tier III contains three stages. Firstly, sparse, heterogeneous, uncertain,
+incomplete, and multi-source data are preprocessed by data fusion techniques. Secondly, complex and
+dynamic data are mined after pre-processing. Thirdly, the global knowledge that is obtained by local
+learning and model fusion is tested and relevant information is fed back to the pre-processing stage. Then
+the model and parameters are adjusted according to the feedback. In the whole process, information
+sharing is not only a promise of smooth development of each stage, but also a purpose of Big Data
+processing.
+8
+In the following, we elaborate challenges with respect the three tier framework in Figure 2.
+3.1 Tier I: Big Data Mining Platform
+In typical data mining systems, the mining procedures require computational intensive computing units
+for data analysis and comparisons. A computing platform is therefore needed to have efficient access to,
+at least, two types of resources: data and computing processors. For small scale data mining tasks, a
+single desktop computer, which contains hard disk and CPU processors, is sufficient to fulfill the data
+mining goals. Indeed, many data mining algorithm are designed to handle this type of problem settings.
+For medium scale data mining tasks, data are typically large (and possibly distributed) and cannot be fit
+into the main memory. Common solutions are to rely on parallel computing (Shafer et al. 1996; Luo et al.
+2012) or collective mining (Chen et al. 2004) to sample and aggregate data from different sources and
+then use parallel computing programming (such as the Message Passing Interface) to carry out the mining
+process.
+For Big Data mining, because data scale is far beyond the capacity that a single personal computer
+(PC) can handle, a typical Big Data processing framework will rely on cluster computers with a high
+performance computing platform, where a data mining task is deployed by running some parallel
+programming tools, such as MapReduce or ECL (Enterprise Control Language), on a large number of
+computing nodes (i.e., clusters). The role of the software component is to make sure that a single data
+mining task, such as finding the best match of a query from a database with billions of samples, is split
+into many small tasks each of which is running on one or multiple computing nodes. For example, as of
+this writing, the world most powerful super computer Titan, which is deployed at Oak Ridge National
+Laboratory in Tennessee, USA, contains 18,688 nodes each with a 16-core CPU.
+Such a Big Data system, which blends both hardware and software components, is hardly available
+without key industrial stockholders¡¯ support. In fact, for decades, companies have been making business
+decisions based on transactional data stored in relational databases. Big Data mining offers opportunities
+to go beyond their relational databases to rely on less structured data: weblogs, social media, email,
+sensors, and photographs that can be mined for useful information. Major business intelligence companies,
+such IBM, Oracle, Teradata etc., have all featured their own products to help customers acquire and 
+9
+organize these diverse data sources and coordinate with customers¡¯ existing data to find new insights and
+capitalize on hidden relationships.
+3.2 Tier II: Big Data Semantics and Application Knowledge
+Semantics and application knowledge in Big Data refer to numerous aspects related to the regulations,
+policies, user knowledge, and domain information. The two most important issues at this tier include (1)
+data sharing and privacy; and (2) domain and application knowledge. The former provides answers to
+resolve concerns on how data are maintained, accessed, and shared; whereas the latter focuses on
+answering questions like ¡°what are the underlying applications ?¡± and ¡°what are the knowledge or
+patterns users intend to discover from the data ?¡±.
+3.2.1 Information Sharing and Data Privacy
+Information sharing is an ultimate goal for all systems involving multiple parties (Howe et al. 2008).
+While the motivation for sharing is clear, a real-world concern is that Big Data applications are related to
+sensitive information, such as banking transactions and medical records, and so simple data exchanges or
+transmissions do not resolve privacy concerns (Duncan 2007, Huberman 2012, Schadt 2012). For
+example, knowing people¡¯s locations and their preferences, one can enable a variety of useful locationbased
+services, but public disclosure of an individual¡¯s movements over time can have serious
+consequences for privacy. To protect privacy, two common approaches are to (1) restrict access to the
+data, such as adding certification or access control to the data entries, so sensitive information is
+accessible by a limited group of users only, and (2) anonymize data fields such that sensitive information
+cannot be pinpointed to an individual record (Cormode and Srivastava 2009). For the first approach,
+common challenges are to design secured certification or access control mechanisms, such that no
+sensitive information can be misconducted by unauthorized individuals. For data anonymization, the main
+objective is to inject randomness into the data to ensure a number of privacy goals. For example, the most
+common k-anonymity privacy measure is to ensure that each individual in the database must be
+indistinguishable from k?1 others. Common anonymization approaches are to use suppression,
+generalization, perturbation, and permutation to generate an altered version of the data, which is, in fact,
+some uncertain data. 
+10
+One of the major benefits of the data annomization based information sharing approaches is that, once
+anonymized, data can be freely shared across different parties without involving restrict access controls.
+This naturally leads to another research area namely privacy preserving data mining (Lindell and Pinkas
+2000), where multiple parties, each holding some sensitive data, are trying to achieve a data mining goal
+without sharing any sensitive information inside the data. This privacy preserving mining goal, in practice,
+can be solved through two types of approaches including (1) using some communication protocols, such
+as Yao¡¯s protocol (Yao 1986), to request the distributions of the whole dataset, rather than requesting the
+actual values of each record, or (2) to design some special data mining methods to derive knowledge from
+anonymized data (this is inherently similar to the uncertain data mining methods).
+3.2.2 Domain and Application Knowledge
+Domain and application knowledge (Kopanas et al. 2002) provides essential information for designing
+Big Data mining algorithms and systems. In a simple case, domain knowledge can help identify right
+features for modeling the underlying data (e.g., blood glucose level is clearly a better feature than body
+mass in diagnosing Type II diabetes). The domain and application knowledge can also help design
+achievable business objectives by using Big Data analytical techniques. For example, stock market data
+are a typical domain which constantly generates a large quantity of information, such as bids, buys, and
+puts, in every single second. The market continuously evolves and is impacted by different factors, such
+as domestic and international news, government reports, and natural disasters etc. An appealing Big Data
+mining task is to design a Big Data mining system to predict the movement of the market in the next one
+or two minutes. Such systems, even if the prediction accuracy is just slightly better than random guess,
+will bring significant business values to the developers (Bughin et al. 2010). Without correct domain
+knowledge, it is a clear challenge to find effective matrices/measures to characterize the market
+movement, and such knowledge is often beyond the mind of the data miners, although some recent
+research has shown that using social networks, such as Twitter, it is possible to predict the stock market
+upward/downward trends (Bollen et al. 2011) with good accuracies.
+11
+3.3 Tier III: Big Data Mining Algorithms
+3.3.1 Local Learning and Model Fusion for Multiple Information Sources
+As Big Data applications are featured with autonomous sources and decentralized controls, aggregating
+distributed data sources to a centralized site for mining is systematically prohibitive due to the potential
+transmission cost and privacy concerns. On the other hand, although we can always carry out mining
+activities at each distributed site, the biased view of the data collected at each different site often leads to
+biased decisions or models, just like the elephant and blind men case. Under such a circumstance, a Big
+Data mining system has to enable an information exchange and fusion mechanism to ensure that all
+distributed sites (or information sources) can work together to achieve a global optimization goal. Model
+mining and correlations are the key steps to ensure that models or patterns discovered from multiple
+information sources can be consolidated to meet the global mining objective. More specifically, the global
+mining can be featured with a two-step (local mining and global correlation) process, at data, model, and
+at knowledge levels. At the data level, each local site can calculate the data statistics based on the local
+data sources and exchange the statistics between sites to achieve a global data distribution view. At the
+model or pattern level, each site can carry out local mining activities, with respect to the localized data, to
+discover local patterns. By exchanging patterns between multiple sources, new global patterns can be
+synthetized by aggregating patterns across all sites (Wu and Zhang 2003). At the knowledge level, model
+correlation analysis investigates the relevance between models generated from different data sources to
+determine how relevant the data sources are correlated to each other, and how to form accurate decisions
+based on models built from autonomous sources.
+3.3.2 Mining from Sparse, Uncertain, and Incomplete Data
+Spare, uncertain, and incomplete data are defining features for Big Data applications. Being sparse, the
+number of data points is too few for drawing reliable conclusions. This is normally a complication of the
+data dimensionality issues, where data in a high dimensional space (such as more than 1000 dimensions)
+does not show clear trends or distributions. For most machine learning and data mining algorithms, high
+dimensional spare data significantly deteriorate the difficulty and the reliability of the models derived
+from the data. Common approaches are to employ dimension reduction or feature selection (Wu et al.
+2012) to reduce the data dimensions or to carefully include additional samples to decrease the data 
+12
+scarcity, such as generic unsupervised learning methods in data mining.
+Uncertain data are a special type of data reality where each data field is no longer deterministic but
+is subject to some random/error distributions. This is mainly linked to domain specific applications with
+inaccurate data readings and collections. For example, data produced from GPS equipment is inherently
+uncertain, mainly because the technology barrier of the device limits the precision of the data to certain
+levels (such as 1 meter). As a result, each recording location is represented by a mean value plus a
+variance to indicate expected errors. For data privacy related applications (Mitchell 2009), users may
+intentionally inject randomness/errors into the data in order to remain anonymous. This is similar to the
+situation that an individual may not feel comfortable to let you know his/her exact income, but will be
+fine to provide a rough range like [120k, 160k]. For uncertain data, the major challenge is that each data
+item is represented as some sample distributions but not as a single value, so most existing data mining
+algorithms cannot be directly applied. Common solutions are to take the data distributions into
+consideration to estimate model parameters. For example, error aware data mining (Wu and Zhu 2008)
+utilizes the mean and the variance values with respect to each single data item to build a Naive Bayes
+model for classification. Similar approaches have also been applied for decision trees or database queries.
+Incomplete data refers to the missing of data field values for some samples. The missing values can be
+caused by different realities, such as the malfunction of a sensor node, or some systematic policies to
+intentionally skip some values (e.g., dropping some sensor node readings to save power for transmission).
+While most modern data mining algorithms have inbuilt solutions to handle missing values (such as
+ignoring data fields with missing values), data imputation is an established research field which seeks to
+impute missing values in order to produce improved models (compared to the ones built from the original
+data). Many imputation methods (Efron 1994) exist for this purpose, and the major approaches are to fill
+most frequently observed values or to build learning models to predict possible values for each data field,
+based on the observed values of a given instance.
+3.3.3 Mining Complex and Dynamic Data
+The rise of Big Data is driven by the rapid increasing of complex data and their changes in volumes and
+in nature (Birney 2012). Documents posted on WWW servers, Internet backbones, social networks,
+communication networks, and transportation networks etc. are all featured with complex data. While 
+13
+complex dependency structures underneath the data raise the difficulty for our learning systems, they also
+offer exciting opportunities that simple data representations are incapable of achieving. For example,
+researchers have successfully used Twitter, a well-known social networking facility, to detect events such
+as earthquakes and major social activities, with nearly online speed and very high accuracy. In addition,
+the knowledge of people¡¯s queries to search engines also enables a new early warning system for
+detecting fast spreading flu outbreaks (Helft 2008). Making use of complex data is a major challenge for
+Big Data applications, because any two parties in a complex network are potentially interested to each
+other with a social connection. Such a connection is quadratic with respect to the number of nodes in the
+network, so a million node network may be subject to one trillion connections. For a large social network
+site, like Facebook, the number of active users has already reached 1 billion, and analyzing such an
+enormous network is a big challenge for Big Data mining. If we take daily user actions/interactions into
+consideration, the scale of difficulty will be even more astonishing.
+Inspired by the above challenges, many data mining methods have been developed to find interesting
+knowledge from Big Data with complex relationships and dynamically changing volumes. For example,
+finding communities and tracing their dynamically evolving relationships are essential for understanding
+and managing complex systems (Aral and Walker 2012, Centola 2010). Discovering outliers in a social
+network (Borgatti et al. 2009) is the first step to identify spammers and provide safe networking
+environments to our society.
+If only facing with huge amounts of structured data, users can solve the problem simply by purchasing
+more storage or improving storage efficiency. However, Big Data complexity is represented in many
+aspects, including complex heterogeneous data types, complex intrinsic semantic associations in data, and
+complex relationship networks among data. That is to say, the value of Big Data is in its complexity.
+Complex heterogeneous data types: In Big Data, data types include structured data, unstructured data,
+and semi-structured data etc. Specifically, there are tabular data (relational databases), text, hyper-text,
+image, audio and video data etc. The existing data models include key-value stores, bigtable clones,
+document databases, and graph database, which are listed in an ascending order of the complexity of these
+data models. Traditional data models are incapable of handling complex data in the context of Big Data.
+Currently, there is no acknowledged effective and efficient data model to handle Big Data.
+14
+Complex intrinsic semantic associations in data: news on the Web, comments on Twitter, pictures on
+Flicker, and clips of video on YouTube may discuss about an academic award-winning event at the same
+time. There is no doubt that there are strong semantic associations in these data. Mining complex semantic
+associations from ¡°text-image-video¡± data will significantly help improve application system performance
+such as search engines or recommendation systems. However, in the context of Big Data, it is a great
+challenge to efficiently describe semantic features and to build semantic association models to bridge the
+semantic gap of various heterogeneous data sources.
+Complex relationship networks in data: In the context of Big Data, there exist relationships between
+individuals. On the Internet, individuals are webpages and the pages linking to each other via hyperlinks
+form a complex network. There also exist social relationships between individuals forming complex
+social networks, such as big relationship data from Facebook, Twitter, LinkedIn and other social media
+[Banerjee and Agarwal 2012, Chen et al. 2012, Zhao et al. 2012], including call detail records (CDR),
+devices and sensors information [Ahmed and Karypis 2012, Silva et al. 2012], GPS and geo-coded map
+data, massive image files transferred by the Manage File Transfer protocol, Web text and click-stream
+data [Alam et al. 2012], scientific information, e-mail [Liu and Wang 2012], etc. To deal with complex
+relationship networks, emerging research efforts have begun to address the issues of structure-andevolution,
+crowds-and-interaction, and information-and-communication.
+The emergence of Big Data has also spawned new computer architectures for real-time data-intensive
+processing, such as the open source project Apache Hadoop which runs on high-performance clusters.
+The size or complexity of the Big Data, including transaction and interaction data sets, exceeds a regular
+technical capability in capturing, managing, and processing these data within reasonable cost and time
+limits. In the context of Big Data, real-time processing for complex data is a very challenging task.
+4. Research Initiatives and Projects
+In order to tackle the Big Data challenges and ¡°seize the opportunities afforded by the new, data driven
+resolution¡±, the US National Science Foundation (NSF), under President Obama Administration¡¯s Big
+Data initiative, announced the BIGDATA solicitation in 2012. Such a federal initiative has resulted in a
+number of winning projects to investigate the foundations for Big Data management (led by the 
+15
+University of Washington), analytical approaches for genomics based massive data computation (led by
+Brown University), large scale machine learning techniques for high-dimensional datasets which may be
+as large as 500,000 dimensions (led by Carnegie Mellon University), social analytics for large-scale
+scientific literatures (led by Rutgers University), and several others. These projects seek to develop
+methods, algorithms, frameworks, and research infrastructures which allow us to bring the massive
+amounts of data down to a human manageable and interpretable scale. Other countries such as the
+National Natural Science Foundation of China (NSFC) are also catching up with national grants on Big
+Data research.
+Meanwhile, since 2009, the authors have taken the lead in the following national projects that all
+involve Big Data components:
+? Integrating and Mining Bio-Data from Multiple Sources in Biological Networks, sponsored by
+the U.S. National Science Foundation (NSF), Medium Grant No. CCF-0905337, October 1, 2009
+- September 30, 2013.
+Issues and significance: We have integrated and mined bio-data from multiple sources to
+decipher and utilize the structure of biological networks to shed new insights on the
+functions of biological systems. We address the theoretical underpinnings and current and
+future enabling technologies for integrating and mining biological networks. We have
+expanded and integrated the techniques and methods in information acquisition,
+transmission and processing for information networks. We have developed methods for
+semantic-based data integration, automated hypothesis generation from mined data, and
+automated scalable analytical tools to evaluate simulation results and refine models.
+? Big Data Fast Response: Real-time Classification of Big Data Stream, sponsored by the
+Australian Research Council (ARC), Grant No. DP130102748, January 1, 2013 ? Dec. 31 2015.
+Issues and significance: We propose to build a stream-based Big Data analytic framework
+for fast response and real-time decision making. The key challenges and research issues
+include: (1) designing Big Data sampling mechanisms to reduce Big Data volumes to
+manageable size for processing; (2) building prediction models from Big Data streams.
+Such models can adaptively adjust to the dynamic changing of the data, as well as 
+16
+accurately predict the trend of the data in the future; and (3) a knowledge indexing
+framework to ensure real-time data monitoring and classification for Big Data applications.
+? Pattern Matching and Mining with Wildcards and Length Constraints, sponsored by the National
+Natural Science Foundation of China (NSFC), Grant Nos. 60828005 (Phase 1, January 1, 2009 -
+December 31, 2010) and 61229301 (Phase 2, January 1, 2013 - December 31, 2016).
+Issues and significance: We perform a systematic investigation on pattern matching,
+pattern mining with wildcards, and application problems as follows: (1) exploration of the
+NP-hard complexity of the matching and mining problems, (2) multiple pattern matching
+with wildcards, (3) approximate pattern matching and mining, and (4) application of our
+research onto ubiquitous personalized information processing and bioinformatics.
+? Key Technologies for Integration and Mining of Multiple, Heterogeneous Data Sources,
+sponsored by the National High Technology Research and Development Program (863 Program)
+of China, Grant No. 2012AA011005, January 1, 2012 - December 31, 2014.
+Issues and significance: We have performed an investigation on the availability and
+statistical regularities of multi-source, massive and dynamic information, including crossmedia
+search based on information extraction, sampling, uncertain information querying,
+and cross-domain and cross-platform information polymerization. In order to break
+through the limitations of traditional data mining methods, we have studied heterogeneous
+information discovery and mining in complex inline data, mining in data streams, multigranularity
+knowledge discovery from massive multi-source data, distribution regularities
+of massive knowledge, quality fusion of massive knowledge.
+? Group Influence and Interactions in Social Networks, sponsored by the National Basic Research
+973 Program of China, Grant No. 2013CB329604, January 1, 2013 - December 31, 2017.
+Issues and significance: We have studied group influence and interactions in social
+networks, including (1) employing group influence and information diffusion models, and
+deliberating group interaction rules in social networks using dynamic game theory, (2)
+studying interactive individual selection and effect evaluations under social networks
+affected by group emotion, and analyzing emotional interactions and influence among 
+17
+individuals and groups, and (3) establishing an interactive influence model and its
+computing methods for social network groups, in order to reveal the interactive influence
+effects and evolution of social networks.
+5. Related Work
+Big Data Mining Platforms (Tier I): Due to the multi-source, massive, heterogeneous and dynamic
+characteristics of application data involved in a distributed environment, one of the important
+characteristics of Big Data is computing tasks on the petabytes (PB), even the exabyte (EB)-level data
+with a complex computing process. Therefore, utilizing a parallel computer infrastructure, its
+corresponding programming language support, and software models to efficiently analyze and mine the
+distributed PB, even EB-level data are the critical goal for Big Data processing to change from ¡°quantity¡±
+to ¡°quality¡±.
+Currently, Big Data processing mainly depends on parallel programming models like MapReduce, as
+well as providing a cloud computing platform of Big Data services for the public. MapReduce is a batchoriented
+parallel computing model. There is still a certain gap in performance with relational databases.
+How to improve the performance of MapReduce and enhance the real-time nature of large-scale data
+processing is a hot topic in research. The MapReduce parallel programming model has been applied in
+many machine learning and data mining algorithms. Data mining algorithms usually need to scan through
+the training data for getting the statistics to solve or optimize model parameters. It calls for intensive
+computing to access the large-scale data frequently. In order to improve the efficiency of algorithms, Chu
+et al. proposed a general-purpose parallel programming method which is applicable to a large number of
+machine learning algorithms based on the simple MapReduce programming model on multi-core
+processors. 10 classic data mining algorithms are realized in the framework, including locally weighted
+linear regression, k-Means, logistic regression, naive Bayes, linear support vector machines, the
+independent variable analysis, Gaussian discriminant analysis, expectation maximization and backpropagation
+neural networks [Chu et al., 2006]. With the analysis of these classical machine learning
+algorithms, we argue that the computational operations in the algorithm learning process could be
+transformed into a summation operation on a number of training data sets. Summation operations could 
+18
+be performed on different subsets independently and achieve penalization executed easily on the
+MapReduce programming platform. Therefore, a large-scale data set could be divided into several subsets
+and assigned to multiple Mapper nodes. Then various summation operations could be performed on
+these Mapper nodes to get intermediate results. Finally, learning algorithms are parallel executed through
+merging summation of Reduce nodes. Ranger et al. [2007] proposed a MapReduce-based application
+programming interface Phoenix, which supports parallel programming in the environment of multi-core
+and multi-processor systems, and realized three data mining algorithms including k-Means, principal
+component analysis, and linear regression. Gillick et al. [2006] improved the MapReduce¡¯s
+implementation mechanism in Hadoop, evaluated the algorithms¡¯ performance of single-pass learning,
+iterative learning and query-based learning in the MapReduce framework, studied how to share data
+between computing nodes involved in parallel learning algorithms, how to deal with distributed storage
+data, and then showed that the MapReduce mechanisms suitable for large-scale data mining by testing
+series of standard data mining tasks on medium-size clusters. Papadimitriou and Sun [2008] proposed a
+distributed collaborative aggregation (DisCo) framework using practical distributed data preprocessing
+and collaborative aggregation techniques. The implementation on Hadoop in an open source MapReduce
+project showed that DisCo has perfect scalability and can process and analyze massive data sets (with
+hundreds of GB).
+For the weak scalability of traditional analysis software and the poor analysis capabilities of Hadoop,
+Das et al. [2010] conducted a study of the integration of R (open source statistical analysis software) and
+Hadoop. The in-depth integration pushes data computation to parallel processing, which makes Hadoop
+obtain powerful deep analysis capabilities. Wegener et al. [2009] achieved the integration of Weka (an
+open-source machine learning and data mining software tool) and MapReduce. Standard Weka tools can
+only run on a single machine, and cannot go beyond the limit of 1GB of memory. After algorithm
+parallelization, Weka breaks through the limitations and improves performance by taking the advantage of
+parallel computing, and it can handle more than 100GB data on MapReduce clusters. Ghoting et al. [2009]
+proposed Hadoop-ML, on which developers can easily build task-parallel or data-parallel machine
+learning and data mining algorithms on program blocks under the language run-time environment.
+19
+Big Data Semantics and Application Knowledge (Tier II): In privacy protection of massive data, Ye, et
+al, (2013) proposed a multi-layer rough set model, which can accurately describe the granularity change
+produced by different levels of generalization and provide a theoretical foundation for measuring the data
+effectiveness criteria in the anonymization process, and designed a dynamic mechanism for balancing
+privacy and data utility, to solve the optimal generalization / refinement order for classification. A recent
+paper on confidentiality protection in Big Data (Machanavajjhala and Reiter 2012) summarizes a number
+of methods for protecting public release data, including aggregation (such as k-anonymity, I-diversity
+etc.), suppression (i.e., deleting sensitive values), data swapping (i.e., switching values of sensitive data
+records to prevent users from matching), adding random noise, or simply replacing the whole original
+data values at a high risk of disclosure with values synthetically generated from simulated distributions.
+For applications involving Big Data and tremendous data volumes, it is often the case that data are
+physically distributed at different locations, which means that users no longer physically possess the
+storage of their data. To carry out Big Data mining, having an efficient and effective data access
+mechanism is vital, especially for users who intend to hire a third party (such as data miners or data
+auditors) to process their data. Under such a circumstance, users¡¯ privacy concerns may include (1) no
+local data copies or downloading, (2) all analysis must be deployed based on the existing data storage
+systems without violating existing privacy settings, and many others. In Wang et al. (2013), a privacypreserving
+public auditing mechanism for large scale data storage (such as cloud computing systems) has
+been proposed. The public key based mechanism is used to enable Third Party Auditing (TPA), so users
+can safely allow a third party to analyze their data without breaching the security settings or
+compromising the data privacy.
+For most Big Data applications, privacy concerns focuse on excluding the third party (such as data
+miners) from directly accessing the original data. Common solutions are to rely on some privacypreserving
+approaches or encryption mechanisms to protect the data. A recent effort by Lorch et al (2013)
+indicates that users¡¯ ¡°data access patterns¡± can also have severe data privacy concerns and lead to
+disclosures of geographically co-located users or users with common interests (e.g., two users searching
+for the same map locations are likely to be geographically co-located). In their system, namely Shround, it
+hides data access patterns from the servers by using virtual disks. As a result, it can support a variety of 
+20
+Big Data applications, such as microblog search and social network queries, without compromising the
+user privacy.
+Big Data Mining Algorithms (Tier III): In order to adapt to the multi-source, massive, dynamic Big
+Data, researchers have expanded existing data mining methods in many ways, including the efficiency
+improvement of single-source knowledge discovery methods [Chang et al., 2009], designing a data
+mining mechanism from a multi-source perspective [Wu and Zhang, 2003; Wu et al., 2005; Zhang et al.,
+2005], as well as the study of dynamic data mining methods and the analysis of convection data
+[Domingos and Hulten, 2000; Chen et al, 2005]. The main motivation for discovering knowledge from
+massive data is improving the efficiency of single-source mining methods. On the basis of gradual
+improvement of computer hardware functions, researchers continue to explore ways to improve the
+efficiency of knowledge discovery algorithms to make them better for massive data. Due to massive data
+typically coming from different data sources, the knowledge discovery of the massive data must be
+performed using a multi-source mining mechanism. As real-world data often come as a data stream or a
+characteristic flow, a well-established mechanism is needed to discover knowledge and master the
+evolution of knowledge in the dynamic data source. Therefore, the massive, heterogeneous and real-time
+characteristics of multi-source data provide essential differences between single-source knowledge
+discovery and multi-source data mining.
+Wu et al. [Wu and Zhang, 2003; Wu, et al, 2005; Su et al, 2006] proposed and established the theory
+of local pattern analysis, which has laid a foundation for global knowledge discovery in multi-source data
+mining. This theory provides a solution not only for the problem of full search, but also for finding global
+models that traditional mining methods cannot find. Local pattern analysis of data processing can avoid
+putting different data sources together to carry out centralized computing.
+Data streams are widely used in financial analysis, online trading, medical testing, and so on. Static
+knowledge discovery methods cannot adapt to the characteristic of dynamic data streams, such as
+continuity, variability, rapidity, and infinity, and can easily lead to the loss of useful information.
+Therefore, effective theoretical and technical frameworks are needed to support data stream mining
+[Domingos and Hulten, 2000]. 
+21
+Knowledge evolution is a common phenomenon in real-world systems. For example, the clinician's
+treatment programs will constantly adjust with the conditions of the patient, such as family economic
+status, health insurance, the course of treatment, treatment effects, and distribution of cardiovascular and
+other chronic epidemiological changes with the passage of time. In the knowledge discovery process,
+concept drifting aims to analyze the phenomenon of implicit target concept changes or even fundamental
+changes triggered by context changes in data streams. According to different types of concept drifts,
+knowledge evolution can take forms of mutation drift, progressive drift, and data distribution drift, based
+on single features, multiple feature, and streaming features [Wu et al., 2013].
+6. Conclusions
+Driven by real-world applications and key industrial stakeholders and initialized by national funding
+agencies, managing and mining Big Data have shown to be a challenging yet very compelling task. While
+the term Big Data literally concerns about data volumes, our HACE theorem suggests that the key
+characteristics of the Big Data are (1) huge with heterogeneous and diverse data sources, (2) autonomous
+with distributed and decentralized control, and (3) complex and evolving in data and knowledge
+associations. Such combined characteristics suggest that Big Data requires a ¡°big mind¡± to consolidate
+data for maximum values (Jacobs 2009).
+In order to explore Big Data, we have analyzed several challenges at the data, model, and system
+levels. To support Big Data mining, high performance computing platforms are required which impose
+systematic designs to unleash the full power of the Big Data. At the data level, the autonomous
+information sources and the variety of the data collection environments, often result in data with
+complicated conditions, such as missing/uncertain values. In other situations, privacy concerns, noise and
+errors can be introduced into the data, to produce altered data copies. Developing a safe and sound
+information sharing protocol is a major challenge. At the model level, the key challenge is to generate
+global models by combining locally discovered patterns to form a unifying view. This requires carefully
+designed algorithms to analyze model correlations between distributed sites, and fuse decisions from
+multiple sources to gain a best model out of the Big Data. At the system level, the essential challenge is
+that a Big Data mining framework needs to consider complex relationships between samples, models, and 
+22
+data sources, along with their evolving changes with time and other possible factors. A system needs to be
+carefully designed so that unstructured data can be linked through their complex relationships to form
+useful patterns, and the growth of data volumes and item relationships should help form legitimate
+patterns to predict the trend and future.
+We regard Big Data as an emerging trend and the need for Big Data mining is arising in all science
+and engineering domains. With Big Data technologies, we will hopefully be able to provide most relevant
+and most accurate social sensing feedback to better understand our society at real-time. We can further
+stimulate the participation of the public audiences in the data production circle for societal and
+economical events. The era of Big Data has arrived.
+Acknowledgements
+This work is supported by the National 863 Program of China (2012AA011005), the National 973 Program of
+China (2013CB329604), the National Natural Science Foundation of China (NSFC 61229301, 61273297, and
+61273292), the US National Science Foundation (NSF CCF-0905337), and the Australian Research Council (ARC)
+Future Fellowship (FT100100971). The authors would like to thank the anonymous reviewers for their valuable and
+constructive comments on improving the paper
+
+----------------------------------------------------------
+
+Business intelligence and analytics (BI&A) has emerged as an important area of study for both practitioners
+and researchers, reflecting the magnitude and impact of data-related problems to be solved in contemporary
+business organizations. This introduction to the MIS Quarterly Special Issue on Business Intelligence Research
+first provides a framework that identifies the evolution, applications, and emerging research areas of BI&A.
+BI&A 1.0, BI&A 2.0, and BI&A 3.0 are defined and described in terms of their key characteristics and
+capabilities. Current research in BI&A is analyzed and challenges and opportunities associated with BI&A
+research and education are identified. We also report a bibliometric study of critical BI&A publications,
+researchers, and research topics based on more than a decade of related academic and industry publications.
+Finally, the six articles that comprise this special issue are introduced and characterized in terms of the
+proposed BI&A research framework.
+Keywords: Business intelligence and analytics, big data analytics, Web 2.0
+Introduction
+Business intelligence and analytics (BI&A) and the related
+field of big data analytics have become increasingly important
+in both the academic and the business communities over the
+past two decades. Industry studies have highlighted this
+significant development. For example, based on a survey of
+over 4,000 information technology (IT) professionals from 93
+countries and 25 industries, the IBM Tech Trends Report
+(2011) identified business analytics as one of the four major
+technology trends in the 2010s. In a survey of the state of
+business analytics by Bloomberg Businessweek (2011), 97
+percent of companies with revenues exceeding $100 million
+were found to use some form of business analytics. A report
+by the McKinsey Global Institute (Manyika et al. 2011) predicted
+that by 2018, the United States alone will face a shortage
+of 140,000 to 190,000 people with deep analytical skills,
+as well as a shortfall of 1.5 million data-savvy managers with
+the know-how to analyze big data to make effective decisions.
+Hal Varian, Chief Economist at Google and emeritus professor
+at the University of California, Berkeley, commented on
+the emerging opportunities for IT professionals and students
+in data analysis as follows:
+MIS Quarterly Vol. 36 No. 4, pp. 1165-1188/December 2012 1165
+Chen et al./Introduction: Business Intelligence Research
+So what¡¯s getting ubiquitous and cheap? Data. And
+what is complementary to data? Analysis. So my
+recommendation is to take lots of courses about how
+to manipulate and analyze data: databases, machine
+learning, econometrics, statistics, visualization, and
+so on.1
+The opportunities associated with data and analysis in different
+organizations have helped generate significant interest
+in BI&A, which is often referred to as the techniques, technologies,
+systems, practices, methodologies, and applications
+that analyze critical business data to help an enterprise better
+understand its business and market and make timely business
+decisions. In addition to the underlying data processing and
+analytical technologies, BI&A includes business-centric
+practices and methodologies that can be applied to various
+high-impact applications such as e-commerce, market intelligence,
+e-government, healthcare, and security.
+This introduction to the MIS Quarterly Special Issue on
+Business Intelligence Research provides an overview of this
+exciting and high-impact field, highlighting its many challenges
+and opportunities. Figure 1 shows the key sections
+of this paper, including BI&A evolution, applications, and
+emerging analytics research opportunities. We then report
+on a bibliometric study of critical BI&A publications,
+researchers, and research topics based on more than a decade
+of related BI&A academic and industry publications. Education
+and program development opportunities in BI&A are
+presented, followed by a summary of the six articles that
+appear in this special issue using our research framework.
+The final section concludes the paper.
+BI&A Evolution: Key Characteristics
+and Capabilities
+The term intelligence has been used by researchers in
+artificial intelligence since the 1950s. Business intelligence
+became a popular term in the business and IT communities
+only in the 1990s. In the late 2000s, business analytics was
+introduced to represent the key analytical component in BI
+(Davenport 2006). More recently big data and big data
+analytics have been used to describe the data sets and analytical
+techniques in applications that are so large (from
+terabytes to exabytes) and complex (from sensor to social
+media data) that they require advanced and unique data
+storage, management, analysis, and visualization technologies.
+In this article we use business intelligence and analytics
+(BI&A) as a unified term and treat big data analytics as
+a related field that offers new directions for BI&A research.
+BI&A 1.0
+As a data-centric approach, BI&A has its roots in the longstanding
+database management field. It relies heavily on
+various data collection, extraction, and analysis technologies
+(Chaudhuri et al. 2011; Turban et al. 2008; Watson and
+Wixom 2007). The BI&A technologies and applications
+currently adopted in industry can be considered as BI&A 1.0,
+where data are mostly structured, collected by companies
+through various legacy systems, and often stored in commercial
+relational database management systems (RDBMS). The
+analytical techniques commonly used in these systems,
+popularized in the 1990s, are grounded mainly in statistical
+methods developed in the 1970s and data mining techniques
+developed in the 1980s.
+Data management and warehousing is considered the foundation
+of BI&A 1.0. Design of data marts and tools for
+extraction, transformation, and load (ETL) are essential for
+converting and integrating enterprise-specific data. Database
+query, online analytical processing (OLAP), and reporting
+tools based on intuitive, but simple, graphics are used to
+explore important data characteristics. Business performance
+management (BPM) using scorecards and dashboards help
+analyze and visualize a variety of performance metrics. In
+addition to these well-established business reporting functions,
+statistical analysis and data mining techniques are
+adopted for association analysis, data segmentation and
+clustering, classification and regression analysis, anomaly
+detection, and predictive modeling in various business applications.
+Most of these data processing and analytical technologies
+have already been incorporated into the leading commercial
+BI platforms offered by major IT vendors including
+Microsoft, IBM, Oracle, and SAP (Sallam et al. 2011).
+Among the 13 capabilities considered essential for BI platforms,
+according to the Gartner report by Sallam et al. (2011),
+the following eight are considered BI&A 1.0: reporting,
+dashboards, ad hoc query, search-based BI, OLAP, interactive
+visualization, scorecards, predictive modeling, and data
+mining. A few BI&A 1.0 areas are still under active development
+based on the Gartner BI Hype Cycle analysis for
+emerging BI technologies, which include data mining workbenchs,
+column-based DBMS, in-memory DBMS, and realtime
+decision tools (Bitterer 2011). Academic curricula in
+Information Systems (IS) and Computer Science (CS) often
+1
+¡°Hal Varian Answers Your Questions,¡± February 25, 2008 (http://
+www.freakonomics.com/2008/02/25/hal-varian-answers-your-questions/).
+1166 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+Figure 1. BI&A Overview: Evolution, Applications, and Emerging Research
+include well-structured courses such as database management
+systems, data mining, and multivariate statistics.
+BI&A 2.0
+Since the early 2000s, the Internet and the Web began to offer
+unique data collection and analytical research and development
+opportunities. The HTTP-based Web 1.0 systems,
+characterized by Web search engines such as Google and
+Yahoo and e-commerce businesses such as Amazon and
+eBay, allow organizations to present their businesses online
+and interact with their customers directly. In addition to
+porting their traditional RDBMS-based product information
+and business contents online, detailed and IP-specific user
+search and interaction logs that are collected seamlessly
+through cookies and server logs have become a new gold
+mine for understanding customers¡¯ needs and identifying new
+business opportunities. Web intelligence, web analytics, and
+the user-generated content collected through Web 2.0-based
+social and crowd-sourcing systems (Doan et al. 2011;
+O¡¯Reilly 2005) have ushered in a new and exciting era of
+BI&A 2.0 research in the 2000s, centered on text and web
+analytics for unstructured web contents.
+An immense amount of company, industry, product, and
+customer information can be gathered from the web and
+organized and visualized through various text and web mining
+techniques. By analyzing customer clickstream data logs,
+web analytics tools such as Google Analytics can provide a
+trail of the user¡¯s online activities and reveal the user¡¯s
+browsing and purchasing patterns. Web site design, product
+placement optimization, customer transaction analysis, market
+structure analysis, and product recommendations can be
+accomplished through web analytics. The many Web 2.0
+applications developed after 2004 have also created an abundance
+of user-generated content from various online social
+media such as forums, online groups, web blogs, social networking
+sites, social multimedia sites (for photos and videos),
+and even virtual worlds and social games (O¡¯Reilly 2005). In
+addition to capturing celebrity chatter, references to everyday
+events, and socio-political sentiments expressed in these
+media, Web 2.0 applications can efficiently gather a large
+volume of timely feedback and opinions from a diverse
+customer population for different types of businesses.
+Many marketing researchers believe that social media
+analytics presents a unique opportunity for businesses to treat
+the market as a ¡°conversation¡± between businesses and
+customers instead of the traditional business-to-customer,
+one-way ¡°marketing¡± (Lusch et al. 2010). Unlike BI&A 1.0
+technologies that are already integrated into commercial
+enterprise IT systems, future BI&A 2.0 systems will require
+the integration of mature and scalable techniques in text
+mining (e.g., information extraction, topic identification,
+opinion mining, question-answering), web mining, social
+network analysis, and spatial-temporal analysis with existing
+DBMS-based BI&A 1.0 systems.
+MIS Quarterly Vol. 36 No. 4/December 2012 1167
+Chen et al./Introduction: Business Intelligence Research
+Except for basic query and search capabilities, no advanced
+text analytics for unstructured content are currently considered
+in the 13 capabilities of the Gartner BI platforms.
+Several, however, are listed in the Gartner BI Hype Cycle,
+including information semantic services, natural language
+question answering, and content/text analytics (Bitterer 2011).
+New IS and CS courses in text mining and web mining have
+emerged to address needed technical training.
+BI&A 3.0
+Whereas web-based BI&A 2.0 has attracted active research
+from academia and industry, a new research opportunity in
+BI&A 3.0 is emerging. As reported prominently in an
+October 2011 article in The Economist (2011), the number of
+mobile phones and tablets (about 480 million units) surpassed
+the number of laptops and PCs (about 380 million units) for
+the first time in 2011. Although the number of PCs in use
+surpassed 1 billion in 2008, the same article projected that the
+number of mobile connected devices would reach 10 billion
+in 2020. Mobile devices such as the iPad, iPhone, and other
+smart phones and their complete ecosystems of downloadable
+applicationss, from travel advisories to multi-player games,
+are transforming different facets of society, from education to
+healthcare and from entertainment to governments. Other
+sensor-based Internet-enabled devices equipped with RFID,
+barcodes, and radio tags (the ¡°Internet of Things¡±) are
+opening up exciting new steams of innovative applications.
+The ability of such mobile and Internet-enabled devices to
+support highly mobile, location-aware, person-centered, and
+context-relevant operations and transactions will continue to
+offer unique research challenges and opportunities throughout
+the 2010s. Mobile interface, visualization, and HCI
+(human?computer interaction) design are also promising
+research areas. Although the coming of the Web 3.0 (mobile
+and sensor-based) era seems certain, the underlying mobile
+analytics and location and context-aware techniques for
+collecting, processing, analyzing and visualizing such largescale
+and fluid mobile and sensor data are still unknown.
+No integrated, commercial BI&A 3.0 systems are foreseen for
+the near future. Most of the academic research on mobile BI
+is still in an embryonic stage. Although not included in the
+current BI platform core capabilities, mobile BI has been
+included in the Gartner BI Hype Cycle analysis as one of the
+new technologies that has the potential to disrupt the BI
+market significantly (Bitterer 2011). The uncertainty associated
+with BI&A 3.0 presents another unique research
+direction for the IS community.
+Table 1 summarizes the key characteristics of BI&A 1.0, 2.0,
+and 3.0 in relation to the Gartner BI platforms core capabilities
+and hype cycle.
+The decade of the 2010s promises to be an exciting one for
+high-impact BI&A research and development for both industry
+and academia. The business community and industry have
+already taken important steps to adopt BI&A for their needs.
+The IS community faces unique challenges and opportunities
+in making scientific and societal impacts that are relevant and
+long-lasting (Chen 2011a). IS research and education programs
+need to carefully evaluate future directions, curricula,
+and action plans, from BI&A 1.0 to 3.0.
+BI&A Applications: From Big
+Data to Big Impact
+Several global business and IT trends have helped shape past
+and present BI&A research directions. International travel,
+high-speed network connections, global supply-chain, and
+outsourcing have created a tremendous opportunity for IT
+advancement, as predicted by Thomas Freeman in his seminal
+book, The World is Flat (2005). In addition to ultra-fast
+global IT connections, the development and deployment of
+business-related data standards, electronic data interchange
+(EDI) formats, and business databases and information
+systems have greatly facilitated business data creation and
+utilization. The development of the Internet in the 1970s and
+the subsequent large-scale adoption of the World Wide Web
+since the 1990s have increased business data generation and
+collection speeds exponentially. Recently, the Big Data era
+has quietly descended on many communities, from governments
+and e-commerce to health organizations. With an
+overwhelming amount of web-based, mobile, and sensorgenerated
+data arriving at a terabyte and even exabyte scale
+(The Economist 2010a, 2010b), new science, discovery, and
+insights can be obtained from the highly detailed, contextualized,
+and rich contents of relevance to any business or
+organization.
+In addition to being data driven, BI&A is highly applied and
+can leverage opportunities presented by the abundant data and
+domain-specific analytics needed in many critical and highimpact
+application areas. Several of these promising and
+high-impact BI&A applications are presented below, with a
+discussion of the data and analytics characteristics, potential
+impacts, and selected illustrative examples or studies: (1) ecommerce
+and market intelligence, (2) e-government and
+politics 2.0, (3) science and technology, (4) smart health and
+1168 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+Table 1. BI&A Evolution: Key Characteristics and Capabilities
+Key Characteristics
+Gartner BI Platforms Core
+Capabilities Gartner Hype Cycle
+BI&A 1.0 DBMS-based, structured content
+? RDBMS & data warehousing
+? ETL & OLAP
+? Dashboards & scorecards
+? Data mining & statistical analysis
+? Ad hoc query & search-based BI
+? Reporting, dashboards & scorecards
+? OLAP
+? Interactive visualization
+? Predictive modeling & data mining
+? Column-based DBMS
+? In-memory DBMS
+? Real-time decision
+? Data mining workbenches
+BI&A 2.0 Web-based, unstructured content
+? Information retrieval and extraction
+? Opinion mining
+? Question answering
+? Web analytics and web
+intelligence
+? Social media analytics
+? Social network analysis
+? Spatial-temporal analysis
+? Information semantic
+services
+? Natural language question
+answering
+? Content & text analytics
+BI&A 3.0 Mobile and sensor-based content
+? Location-aware analysis
+? Person-centered analysis
+? Context-relevant analysis
+? Mobile visualization & HCI
+? Mobile BI
+well-being, and (5) security and public safety. By carefully
+analyzing the application and data characteristics, researchers
+and practitioners can then adopt or develop the appropriate
+analytical techniques to derive the intended impact. In addition
+to technical system implementation, significant business
+or domain knowledge as well as effective communication
+skills are needed for the successful completion of such BI&A
+projects. IS departments thus face unique opportunities and
+challenges in developing integrated BI&A research and
+education programs for the new generation of data/analyticssavvy
+and business-relevant students and professionals (Chen
+2011a).
+E-Commerce and Market Intelligence
+The excitement surrounding BI&A and Big Data has arguably
+been generated primarily from the web and e-commerce
+communities. Significant market transformation has been
+accomplished by leading e-commerce vendors such Amazon
+and eBay through their innovative and highly scalable ecommerce
+platforms and product recommender systems.
+Major Internet firms such as Google, Amazon, and Facebook
+continue to lead the development of web analytics, cloud
+computing, and social media platforms. The emergence of
+customer-generated Web 2.0 content on various forums,
+newsgroups, social media platforms, and crowd-sourcing
+systems offers another opportunity for researchers and practitioners
+to ¡°listen¡± to the voice of the market from a vast
+number of business constituents that includes customers, employees,
+investors, and the media (Doan et al. 2011; O¡¯Rielly
+2005). Unlike traditional transaction records collected from
+various legacy systems of the 1980s, the data that e-commerce
+systems collect from the web are less structured and often
+contain rich customer opinion and behavioral information.
+For social media analytics of customer opinions, text analysis
+and sentiment analysis techniques are frequently adopted
+(Pang and Lee 2008). Various analytical techniques have also
+been developed for product recommender systems, such as
+association rule mining, database segmentation and clustering,
+anomaly detection, and graph mining (Adomavicius and
+Tuzhilin 2005). Long-tail marketing accomplished by
+reaching the millions of niche markets at the shallow end of
+the product bitstream has become possible via highly targeted
+searches and personalized recommendations (Anderson
+2004).
+The Netfix Prize competition2
+ for the best collaborative
+filtering algorithm to predict user movie ratings helped generate
+significant academic and industry interest in recommender
+systems development and resulted in awarding the grand prize
+of $1 million to the Bellkor¡¯s Pragmatic Chaos team, which
+2
+Netflix Prize (http://www.netflixprize.com//community/viewtopic.php?
+id=1537; accessed July 9, 2012).
+MIS Quarterly Vol. 36 No. 4/December 2012 1169
+Chen et al./Introduction: Business Intelligence Research
+surpassed Netflix¡¯s own algorithm for predicting ratings by
+10.06 percent. However, the publicity associated with the
+competition also raised major unintended customer privacy
+concerns.
+Much BI&A-related e-commerce research and development
+information is appearing in academic IS and CS papers as
+well as in popular IT magazines.
+E-Government and Politics 2.0
+The advent of Web 2.0 has generated much excitement for
+reinventing governments. The 2008 U.S. House, Senate, and
+presidential elections provided the first signs of success for
+online campaigning and political participation. Dubbed
+¡°politics 2.0,¡± politicians use the highly participatory and
+multimedia web platforms for successful policy discussions,
+campaign advertising, voter mobilization, event announcements,
+and online donations. As government and political
+processes become more transparent, participatory, online, and
+multimedia-rich, there is a great opportunity for adopting
+BI&A research in e-government and politics 2.0 applications.
+Selected opinion mining, social network analysis, and social
+media analytics techniques can be used to support online
+political participation, e-democracy, political blogs and
+forums analysis, e-government service delivery, and process
+transparency and accountability (Chen 2009; Chen et al.
+2007). For e-government applications, semantic information
+directory and ontological development (as exemplified below)
+can also be developed to better serve their target citizens.
+Despite the significant transformational potential for BI&A in
+e-government research, there has been less academic research
+than, for example, e-commerce-related BI&A research. Egovernment
+research often involves researchers from political
+science and public policy. For example, Karpf (2009) analyzed
+the growth of the political blogosphere in the United
+States and found significant innovation of existing political
+institutions in adopting blogging platforms into their Web
+offerings. In his research, 2D blogspace mapping with composite
+rankings helped reveal the partisan makeup of the
+American political blogsphere. Yang and Callan (2009)
+demonstrated the value for ontology development for government
+services through their development of the OntoCop
+system, which works interactively with a user to organize and
+summarize online public comments from citizens.
+Science and Technology
+Many areas of science and technology (S&T) are reaping the
+benefits of high-throughput sensors and instruments, from
+astrophysics and oceanography, to genomics and environmental
+research. To facilitate information sharing and data
+analytics, the National Science Foundation (NSF) recently
+mandated that every project is required to provide a data
+management plan. Cyber-infrastructure, in particular, has
+become critical for supporting such data-sharing initiatives.
+The 2012 NSF BIGDATA3
+ program solicitation is an obvious
+example of the U.S. government funding agency¡¯s concerted
+efforts to promote big data analytics. The program
+aims to advance the core scientific and technological
+means of managing, analyzing, visualizing, and extracting
+useful information from large, diverse, distributed
+and heterogeneous data sets so as to accelerate
+the progress of scientific discovery and innovation;
+lead to new fields of inquiry that would not
+otherwise be possible; encourage the development of
+new data analytic tools and algorithms; facilitate
+scalable, accessible, and sustainable data infrastructure;
+increase understanding of human and social
+processes and interactions; and promote economic
+growth and improved health and quality of life.
+Several S&T disciplines have already begun their journey
+toward big data analytics. For example, in biology, the NSF
+funded iPlant Collaborative4
+ is using cyberinfrastructure to
+support a community of researchers, educators, and students
+working in plant sciences. iPlant is intended to foster a new
+generation of biologists equipped to harness rapidly expanding
+computational techniques and growing data sets to
+address the grand challenges of plant biology. The iPlant data
+set is diverse and includes canonical or reference data,
+experimental data, simulation and model data, observational
+data, and other derived data. It also offers various open
+source data processing and analytics tools.
+In astronomy, the Sloan Digital Sky Survey (SDSS)5
+ shows
+how computational methods and big data can support and
+facilitate sense making and decision making at both the
+macroscopic and the microscopic level in a rapidly growing
+and globalized research field. The SDSS is one of the most
+ambitious and influential surveys in the history of astronomy.
+3
+¡°Core Techniques and Technologies for Advancing Big Data Science &
+Engineering (BIGDATA),¡± Program Solicitation NSF 12-499 (http://www.
+nsf.gov/pubs/2012/nsf12499/nsf12499.htm; accessed August 2, 2012).
+4
+iPlant Collaborative (http://www.iplantcollaborative.org/about; accessed
+August 2, 2012).
+5
+¡°Sloan Digital Sky Survey: Mapping the Universe¡± (http://www.sdss.org/;
+accessed August 2, 2012).
+1170 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+Over its eight years of operation, it has obtained deep, multicolor
+images covering more than a quarter of the sky and
+created three-dimensional maps containing more than 930,000
+galaxies and over 120,000 quasars. Continuing to gather data
+at a rate of 200 gigabytes per night, SDSS has amassed more
+than 140 terabytes of data. The international Large Hadron
+Collider (LHC) effort for high-energy physics is another
+example of big data, producing about 13 petabytes of data in
+a year (Brumfiel 2011).
+Smart Health and Wellbeing
+Much like the big data opportunities facing the e-commerce
+and S&T communities, the health community is facing a
+tsunami of health- and healthcare-related content generated
+from numerous patient care points of contact, sophisticated
+medical instruments, and web-based health communities.
+Two main sources of health big data are genomics-driven big
+data (genotyping, gene expression, sequencing data) and
+payer?provider big data (electronic health records, insurance
+records, pharmacy prescription, patient feedback and
+responses) (Miller 2012a). The expected raw sequencing data
+from each person is approximately four terabytes. From the
+payer?provider side, a data matrix might have hundreds of
+thousands of patients with many records and parameters
+(demographics, medications, outcomes) collected over a long
+period of time. Extracting knowledge from health big data
+poses significant research and practical challenges, especially
+considering the HIPAA (Health Insurance Portability and
+Accountability Act) and IRB (Institutional Review Board)
+requirements for building a privacy-preserving and trustworthy
+health infrastructure and conducting ethical healthrelated
+research (Gelfand 2011/2012). Health big data analytics,
+in general, lags behind e-commerce BI&A applications
+because it has rarely taken advantage of scalable analytical
+methods or computational platforms (Miller 2012a).
+Over the past decade, electronic health records (EHR) have
+been widely adopted in hospitals and clinics worldwide.
+Significant clinical knowledge and a deeper understanding of
+patient disease patterns can be gleanded from such collections
+(Hanauer et al. 2009; Hanauer et al. 2011; Lin et al. 2011).
+Hanauer et al. (2011), for example, used large-scale, longitudinal
+EHR to research associations in medical diagnoses
+and consider temporal relations between events to better
+elucidate patterns of disease progression. Lin et al. (2011)
+used symptom?disease?treatment (SDT) association rule
+mining on a comprehensive EHR of approximately 2.1
+million records from a major hospital. Based on selected
+International Classification of Diseases (ICD-9) codes, they
+were able to identify clinically relevant and accurate SDT
+associations from patient records in seven distinct diseases,
+ranging from cancers to chronic and infectious diseases.
+In addition to EHR, health social media sites such as Daily
+Strength and PatientsLikeMe provide unique research opportunities
+in healthcare decision support and patient empowerment
+(Miller 2012b), especially for chronic diseases such as
+diabetes, Parkinson¡¯s, Alzheimer¡¯s, and cancer. Association
+rule mining and clustering, health social media monitoring
+and analysis, health text analytics, health ontologies, patient
+network analysis, and adverse drug side-effect analysis are
+promising areas of research in health-related BI&A. Due to
+the importance of HIPAA regulations, privacy-preserving
+health data mining is also gaining attention (Gelfand 2011/
+2012).
+Partially funded by the National Institutes of Health (NIH),
+the NSF BIGDATA program solicitation includes common
+interests in big data across NSF and NIH. Clinical decision
+making, patient-centered therapy, and knowledge bases for
+health, disease, genome, and environment are some of the
+areas in which BI&A techniques can contribute (Chen 2011b;
+Wactlar et al. 2011). Another recent, major NSF initiative
+related to health big data analytics is the NSF Smart Health
+and Wellbeing (SHB)6
+ program, which seeks to address
+fundamental technical and scientific issues that would support
+a much-needed transformation of healthcare from reactive and
+hospital-centered to preventive, proactive, evidence-based,
+person-centered, and focused on wellbeing rather than disease
+control. The SHB research topics include sensor technology,
+networking, information and machine learning technology,
+modeling cognitive processes, system and process modeling,
+and social and economic issues (Wactlar et al. 2011), most of
+which are relevant to healthcare BI&A.
+Security and Public Safety
+Since the tragic events of September 11, 2001, security
+research has gained much attention, especially given the
+increasing dependency of business and our global society on
+digital enablement. Researchers in computational science,
+information systems, social sciences, engineering, medicine,
+and many other fields have been called upon to help enhance
+our ability to fight violence, terrorism, cyber crimes, and other
+cyber security concerns. Critical mission areas have been
+identified where information technology can contribute, as
+suggested in the U.S. Office of Homeland Security¡¯s report
+¡°National Strategy for Homeland Security,¡± released in 2002,
+including intelligence and warning, border and transportation
+6
+¡°Smart Health and Wellbeing (SBH),¡± Program Solicitation NSF 12-512
+(http://www.nsf.gov/pubs/2012/nsf12512/nsf12512.htm; accessed August 2,
+2012).
+MIS Quarterly Vol. 36 No. 4/December 2012 1171
+Chen et al./Introduction: Business Intelligence Research
+security, domestic counter-terrorism, protecting critical infrastructure
+(including cyberspace), defending against catastrophic
+terrorism, and emergency preparedness and response.
+Facing the critical missions of international security and
+various data and technical challenges, the need to develop the
+science of ¡°security informatics¡± was recognized, with its
+main objective being the
+development of advanced information technologies,
+systems, algorithms, and databases for securityrelated
+applications, through an integrated technological,
+organizational, and policy-based approach
+(Chen 2006, p. 7).
+BI&A has much to contribute to the emerging field of security
+informatics.
+Security issues are a major concern for most organizations.
+According to the research firm International Data Corporation,
+large companies are expected to spend $32.8 billion in
+computer security in 2012, and small- and medium-size
+companies will spend more on security than on other IT
+purchases over the next three years (Perlroth and Rusli 2012).
+In academia, several security-related disciplines such as
+computer security, computational criminology, and terrorism
+informatics are also flourishing (Brantingham 2011; Chen et
+al. 2008).
+Intelligence, security, and public safety agencies are gathering
+large amounts of data from multiple sources, from criminal
+records of terrorism incidents, and from cyber security threats
+to multilingual open-source intelligence. Companies of different
+sizes are facing the daunting task of defending against
+cybersecurity threats and protecting their intellectual assets
+and infrastructure. Processing and analyzing security-related
+data, however, is increasingly difficult. A significant challenge
+in security IT research is the information stovepipe and
+overload resulting from diverse data sources, multiple data
+formats, and large data volumes. Current research on technologies
+for cybersecurity, counter-terrorism, and crimefighting
+applications lacks a consistent framework for
+addressing these data challenges. Selected BI&A technologies
+such as criminal association rule mining and clustering,
+criminal network analysis, spatial-temporal analysis and
+visualization, multilingual text analytics, sentiment and affect
+analysis, and cyber attacks analysis and attribution should be
+considered for security informatics research.
+The University of Arizona¡¯s COPLINK and Dark Web
+research programs offer significant examples of crime data
+mining and terrorism informatics within the IS community
+(Chen 2006, 2012). The COPLINK information sharing and
+crime data mining system, initially developed with funding
+from NSF and the Department of Justice, is currently in use
+by more than 4,500 police agencies in the United States and
+by 25 NATO countries, and was acquired by IBM in 2011.
+The Dark Web research, funded by NSF and the Department
+of Defense (DOD), has generated one of the largest known
+academic terrorism research databases (about 20 terabytes of
+terrorist web sites and social media content) and generated
+advanced multilingual social media analytics techniques.
+Recognizing the challenges presented by the volume and
+complexity of defense-related big data, the U.S. Defense
+Advanced Research Project Agency (DARPA) within DOD
+initiated the XDATA program in 2012 to help develop computational
+techniques and software tools for processing and
+analyzing the vast amount of mission-oriented information for
+defense activities. XDATA aims to address the need for
+scalable algorithms for processing and visualization of
+imperfect and incomplete data. The program engages applied
+mathematics, computer science, and data visualization communities
+to develop big data analytics and usability solutions
+for warfighters.7
+ BI&A researchers could contribute significantly
+in this area.
+Table 2 summarizes these promising BI&A applications, data
+characteristics, analytics techniques, and potential impacts.
+BI&A Research Framework:
+Foundational Technologies and
+Emerging Research in Analytics
+The opportunities with the abovementioned emerging and
+high-impact applications have generated a great deal of
+excitement within both the BI&A industry and the research
+community. Whereas industry focuses on scalable and integrated
+systems and implementations for applications in different
+organizations, the academic community needs to
+continue to advance the key technologies in analytics.
+Emerging analytics research opportunities can be classified
+into five critical technical areas?(big) data analytics, text
+analytics, web analytics, network analytics, and mobile
+analytics?all of which can contribute to to BI&A 1.0, 2.0,
+and 3.0. The classification of these five topic areas is intended
+7
+¡°DARPA Calls for Advances in ¡®Big Data¡± to Help the Warfighter,¡± March
+29, 2012 (http://www.darpa.mil/NewsEvents/Releases/2012/03/29.aspx;
+accessed August 5, 2012).
+1172 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+Table 2. BI&A Applications: From Big Data to Big Impact
+E-Commerce and
+Market Intelligence
+E-Government and
+Politics 2.0
+Science &
+Technology
+Smart Health and
+Wellbeing
+Security and
+Public Safety
+Applications ? Recommender
+systems
+? Social media
+monitoring and
+analysis
+? Crowd-sourcing
+systems
+? Social and virtual
+games
+? Ubiquitous
+government services
+? Equal access and
+public services
+? Citizen engagement
+and participation
+? Political campaign
+and e-polling
+? S&T innovation
+? Hypothesis testing
+? Knowledge
+discovery
+? Human and plant
+genomics
+? Healthcare
+decision support
+? Patient community
+analysis
+? Crime analysis
+? Computational
+criminology
+? Terrorism
+informatics
+? Open-source
+intelligence
+? Cyber security
+Data ? Search and user
+logs
+? Customer transaction
+records
+? Customergenerated
+content
+? Government information
+and services
+? Rules and regulations
+? Citizen feedback and
+comments
+? S&T instruments
+and systemgenerated
+data
+? Sensor and
+network content
+? Genomics and
+sequence data
+? Electronic health
+records (EHR)
+? Health and patient
+social media
+? Criminal records
+? Crime maps
+? Criminal networks
+? News and web
+contents
+? Terrorism incident
+databases
+? Viruses, cyber
+attacks, and
+botnets
+Characteristics:
+Structured webbased,
+usergenerated
+content,
+rich network information,
+unstructured
+informal customer
+opinions
+Characteristics:
+Fragmented information
+sources and
+legacy systems, rich
+textual content,
+unstructured informal
+citizen conversations
+Characteristics:
+High-throughput
+instrument-based
+data collection, finegrained
+multiplemodality
+and largescale
+records, S&T
+specific data formats
+Characteristics:
+Disparate but highly
+linked content,
+person-specific
+content, HIPAA, IRB
+and ethics issues
+Characteristics:
+Personal identity
+information, incomplete
+and deceptive
+content, rich group
+and network information,
+multilingual
+content
+Analytics ? Association rule
+mining
+? Database segmentation
+and
+clustering
+? Anomaly detection
+? Graph mining
+? Social network
+analysis
+? Text and web
+analytics
+? Sentiment and
+affect analysis
+? Information integration
+? Content and text
+analytics
+? Government information
+semantic services
+and ontologies
+? Social media monitoring
+and analysis
+? Social network
+analysis
+? Sentiment and affect
+analysis
+? S&T based
+domain-specific
+mathematical and
+analytical models
+? Genomics and
+sequence analysis
+and visualization
+? EHR association
+mining and
+clustering
+? Health social
+media monitoring
+and analysis
+? Health text
+analytics
+? Health ontologies
+? Patient network
+analysis
+? Adverse drug
+side-effect
+analysis
+? Privacy-preserving
+data mining
+? Criminal
+association rule
+mining and
+clustering
+? Criminal network
+analysis
+? Spatial-temporal
+analysis and
+visualization
+? Multilingual text
+analytics
+? Sentiment and
+affect analysis
+? Cyber attacks
+analysis and
+attribution
+Impacts Long-tail marketing,
+targeted and personalized
+recommendation,
+increased sale
+and customer
+satisfaction
+Transforming governments,
+empowering
+citizens, improving
+transparency, participation,
+and equality
+S&T advances,
+scientific impact
+Improved healthcare
+quality, improved
+long-term care,
+patient empowerment
+Improved public
+safety and security
+MIS Quarterly Vol. 36 No. 4/December 2012 1173
+Chen et al./Introduction: Business Intelligence Research
+Table 3. BI&A Research Framework: Foundational Technologies and Emerging Research in Analytics
+(Big) Data Analytics Text Analytics Web Analytics Network Analytics Mobile Analytics
+Foundational
+Technologies
+? RDBMS
+? data warehousing
+? ETL
+? OLAP
+? BPM
+? data mining
+? clustering
+? regression
+? classification
+? association
+analysis
+? anomaly detection
+? neural networks
+? genetic algorithms
+? multivariate
+statistical analysis
+? optimization
+? heuristic search
+? information
+retrieval
+? document
+representation
+? query processing
+? relevance feedback
+? user models
+? search engines
+? enterprise search
+systems
+? information
+retrieval
+? computational
+linguistics
+? search engines
+? web crawling
+? web site ranking
+? search log analysis
+? recommender
+systems
+? web services
+? mashups
+? bibliometric
+analysis
+? citation network
+? coauthorship
+network
+? social network
+theories
+? network metrics
+and topology
+? mathematical
+network models
+? network
+visualization
+? web services
+? smartphone
+platforms
+Emerging
+Research
+? statistical machine
+learning
+? sequential and
+temporal mining
+? spatial mining
+? mining high-speed
+data streams and
+sensor data
+? process mining
+? privacy-preserving
+data mining
+? network mining
+? web mining
+? column-based
+DBMS
+? in-memory DBMS
+? parallel DBMS
+? cloud computing
+? Hadoop
+? MapReduce
+? statistical NLP
+? information
+extraction
+? topic models
+? question-answering
+systems
+? opinion mining
+? sentiment/affect
+analysis
+? web stylometric
+analysis
+? multilingual
+analysis
+? text visualization
+? multimedia IR
+? mobile IR
+? Hadoop
+? MapReduce
+? cloud services
+? cloud computing
+? social search and
+mining
+? reputation systems
+? social media
+analytics
+? web visualization
+? web-based
+auctions
+? internet
+monetization
+? social marketing
+? web privacy/
+security
+? link mining
+? community
+detection
+? dynamic network
+modeling
+? agent-based
+modeling
+? social influence
+and information
+diffusion models
+? ERGMs
+? virtual communities
+? criminal/dark
+networks
+? social/political
+analysis
+? trust and reputation
+? mobile web
+services
+? mobile pervasive
+apps
+? mobile sensing
+apps
+? mobile social
+innovation
+? mobile social
+networking
+? mobile visualization/HCI
+? personalization and
+behavioral
+modeling
+? gamification
+? mobile advertising
+and marketing
+to highlight the key characteristics of each area; however, a
+few of these areas may leverage similar underlying technologies.
+In each analytics area we present the foundational
+technologies that are mature and well developed and suggest
+selected emerging research areas (see Table 3).
+(Big) Data Analytics
+Data analytics refers to the BI&A technologies that are
+grounded mostly in data mining and statistical analysis. As
+mentioned previously, most of these techniques rely on the
+mature commercial technologies of relational DBMS, data
+warehousing, ETL, OLAP, and BPM (Chaudhuri et al. 2011).
+Since the late 1980s, various data mining algorithms have
+been developed by researchers from the artificial intelligence,
+algorithm, and database communities. In the IEEE 2006
+International Conference on Data Mining (ICDM), the 10
+most influential data mining algorithms were identified based
+on expert nominations, citation counts, and a community
+survey. In ranked order, they are C4.5, k-means, SVM
+(support vector machine), Apriori, EM (expectation maximization),
+PageRank, AdaBoost, kNN (k-nearest neighbors),
+Naive Bayes, and CART (Wu et al. 2007). These algorithms
+cover classification, clustering, regression, association analysis,
+and network analysis. Most of these popular data mining
+algorithms have been incorporated in commercial and open
+source data mining systems (Witten et al. 2011). Other
+1174 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+advances such as neural networks for classification/prediction
+and clustering and genetic algorithms for optimization and
+machine learning have all contributed to the success of data
+mining in different applications.
+Two other data analytics approaches commonly taught in
+business school are also critical for BI&A. Grounded in
+statistical theories and models, multivariate statistical analysis
+covers analytical techniques such as regression, factor analysis,
+clustering, and discriminant analysis that have been used
+successfully in various business applications. Developed in
+the management science community, optimization techniques
+and heuristic search are also suitable for selected BI&A problems
+such as database feature selection and web crawling/
+spidering. Most of these techniques can be found in business
+school curricula.
+Due to the success achieved collectively by the data mining
+and statistical analysis community, data analytics continues to
+be an active area of research. Statistical machine learning,
+often based on well-grounded mathematical models and
+powerful algorithms, techniques such as Bayesian networks,
+Hidden Markov models, support vector machine, reinforcement
+learning, and ensemble models, have been applied to
+data, text, and web analytics applications. Other new data
+analytics techniques explore and leverage unique data characteristics,
+from sequential/temporal mining and spatial mining,
+to data mining for high-speed data streams and sensor data.
+Increased privacy concerns in various e-commerce, egovernment,
+and healthcare applications have caused privacypreserving
+data mining to become an emerging area of
+research. Many of these methods are data-driven, relying on
+various anonymization techniques, while others are processdriven,
+defining how data can be accessed and used (Gelfand
+2011/ 2012). Over the past decade, process mining has also
+emerged as a new research field that focuses on the analysis
+of processes using event data. Process mining has become
+possible due to the availability of event logs in various
+industries (e.g., healthcare, supply chains) and new process
+discovery and conformance checking techniques (van der
+Aalst 2012). Furthermore, network data and web content have
+helped generate exciting research in network analytics and
+web analytics, which are presented below.
+In addition to active academic research on data analytics,
+industry research and development has also generated much
+excitement, especially with respect to big data analytics for
+semi-structured content. Unlike the structured data that can
+be handled repeatedly through a RDBMS, semi-structured
+data may call for ad hoc and one-time extraction, parsing,
+processing, indexing, and analytics in a scalable and distributed
+MapReduce or Hadoop environment. MapReduce
+has been hailed as a revolutionary new platform for largescale,
+massively parallel data access (Patterson 2008).
+Inspired in part by MapReduce, Hadoop provides a Javabased
+software framework for distributed processing of dataintensive
+transformation and analytics. The top three commercial
+database suppliers?Oracle, IBM, and Microsoft?
+have all adopted Hadoop, some within a cloud infrastructure.
+The open source Apache Hadoop has also gained significant
+traction for business analytics, including Chukwa for data
+collection, HBase for distributed data storage, Hive for data
+summarization and ad hoc querying, and Mahout for data
+mining (Henschen 2011). In their perspective paper, Stonebraker
+et al. (2010) compared MapReduce with the parallel
+DBMS. The commercial parallel DBMS showed clear advantages
+in efficient query processing and high-level query
+language and interface, whereas MapReduce excelled in ETL
+and analytics for ¡°read only¡± semi-structured data sets. New
+Hadoop- and MapReduce-based systems have become
+another viable option for big data analytics in addition to the
+commercial systems developed for RDBMS, column-based
+DBMS, in-memory DBMS, and parallel DBMS (Chaudhuri
+et al. 2011).
+Text Analytics
+A significant portion of the unstructured content collected by
+an organization is in textual format, from e-mail communication
+and corporate documents to web pages and social
+media content. Text analytics has its academic roots in
+information retrieval and computational linguistics. In information
+retrieval, document representation and query processing
+are the foundations for developing the vector-space
+model, Boolean retrieval model, and probabilistic retrieval
+model, which in turn, became the basis for the modern digital
+libraries, search engines, and enterprise search systems
+(Salton 1989). In computational linguistics, statistical natural
+language processing (NLP) techniques for lexical acquisition,
+word sense disambiguation, part-of-speech-tagging (POST),
+and probabilistic context-free grammars have also become
+important for representing text (Manning and Schutze 1999).
+In addition to document and query representations, user
+models and relevance feedback are also important in
+enhancing search performance.
+Since the early 1990s, search engines have evolved into
+mature commercial systems, consisting of fast, distributed
+crawling; efficient inverted indexing; inlink-based page
+ranking; and search logs analytics. Many of these foundational
+text processing and indexing techniques have been
+deployed in text-based enterprise search and document
+management systems in BI&A 1.0.
+MIS Quarterly Vol. 36 No. 4/December 2012 1175
+Chen et al./Introduction: Business Intelligence Research
+Leveraging the power of big data (for training) and statistical
+NLP (for building language models), text analytics techniques
+have been actively pursued in several emerging areas,
+including information extraction, topic models, questionanswering
+(Q/A), and opinion mining. Information extraction
+is an area of research that aims to automatically extract
+specific kinds of structured information from documents. As
+a building block of information extraction, NER (named
+entity recognition, also known as entity extraction) is a
+process that identifies atomic elements in text and classifies
+them into predefined categories (e.g., names, places, dates).
+NER techniques have been successfully developed for news
+analysis and biomedical applications. Topic models are algorithms
+for discovering the main themes that pervade a large
+and otherwise unstructured collection of documents. New
+topic modeling algorithms such as LDA (latent Dirichlet
+allocation) and other probabilistic models have attracted
+recent research (Blei 2012). Question answering (Q/A) systems
+rely on techniques from NLP, information retrieval, and
+human?computer interaction. Primarily designed to answer
+factual questions (i.e., who, what, when, and where kinds of
+questions), Q/A systems involve different techniques for
+question analysis, source retrieval, answer extraction, and
+answer presentation (Maybury 2004). The recent successes
+of IBM¡¯s Watson and Apple¡¯s Siri have highlighted Q/A
+research and commercialization opportunities. Many promising
+Q/A system application areas have been identified,
+including education, health, and defense. Opinion mining
+refers to the computational techniques for extracting, classifying,
+understanding, and assessing the opinions expressed in
+various online news sources, social media comments, and
+other user-generated contents. Sentiment analysis is often
+used in opinion mining to identify sentiment, affect, subjectivity,
+and other emotional states in online text. Web 2.0 and
+social media content have created abundant and exciting
+opportunities for understanding the opinions of the general
+public and consumers regarding social events, political movements,
+company strategies, marketing campaigns, and product
+preferences (Pang and Lee 2008).
+In addition to the above research directions, text analytics also
+offers significant research opportunities and challenges in
+several more focused areas, including web stylometric
+analysis for authorship attribution, multilingual analysis for
+web documents, and large-scale text visualization. Multimedia
+information retrieval and mobile information retrieval
+are two other related areas that require support of text
+analytics techniques, in addition to the core multimedia and
+mobile technologies. Similar to big data analytics, text
+analytics using MapReduce, Hadoop, and cloud services will
+continue to foster active research directions in both academia
+and industry.
+Web Analytics
+Over the past decade, web analytics has emerged as an active
+field of research within BI&A. Building on the data mining
+and statistical analysis foundations of data analytics and on
+the information retrieval and NLP models in text analytics,
+web analytics offers unique analytical challenges and
+opportunities. HTTP/HTML-based hyperlinked web sites and
+associated web search engines and directory systems for
+locating web content have helped develop unique Internetbased
+technologies for web site crawling/spidering, web page
+updating, web site ranking, and search log analysis. Web log
+analysis based on customer transactions has subsequently
+turned into active research in recommender systems. However,
+web analytics has become even more exciting with the
+maturity and popularity of web services and Web 2.0 systems
+in the mid-2000s (O¡¯Reilly 2005).
+Based on XML and Internet protocols (HTTP, SMTP), web
+services offer a new way of reusing and integrating third party
+or legacy systems. New types of web services and their
+associated APIs (application programming interface) allow
+developers to easily integrate diverse content from different
+web-enabled system, for example, REST (representational
+state transfer) for invoking remote services, RSS (really
+simple syndication) for news ¡°pushing,¡± JSON (JavaScript
+object notation) for lightweight data-interchange, and AJAX
+(asynchronous JavaScript + XML) for data interchange and
+dynamic display. Such lightweight programming models
+support data syndication and notification and ¡°mashups¡± of
+multimedia content (e.g., Flickr, Youtube, Google Maps)
+from different web sources?a process somewhat similar to
+ETL (extraction, transformation, and load) in BI&A 1.0.
+Most of the e-commerce vendors have provided mature APIs
+for accessing their product and customer content (Schonfeld
+2005). For example, through Amazon Web Services, developers
+can access product catalog, customer reviews, site
+ranking, historical pricing, and the Amazon Elastic Compute
+Cloud (EC2) for computing capacity. Similarly, Google web
+APIs support AJAX search, Map API, GData API (for
+Calendar, Gmail, etc.), Google Translate, and Google App
+Engine for cloud computing resources. Web services and
+APIs continue to provide an exciting stream of new data
+sources for BI&A 2.0 research.
+A major emerging component in web analytics research is the
+development of cloud computing platforms and services,
+which include applications, system software, and hardware
+delivered as services over the Internet. Based on serviceoriented
+architecture (SOA), server virtualization, and utility
+computing, cloud computing can be offered as software as a
+1176 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+service (SaaS), infrastructure as a service (IaaS), or platform
+as a service (PaaS). Only a few leading IT vendors are currently
+positioned to support high-end, high-throughput BI&A
+applications using cloud computing. For example, Amazon
+Elastic Compute Cloud (EC2) enables users to rent virtual
+computers on which to run their own computer applications.
+Its Simple Storage Service (S3) provides online storage web
+service. Google App Engine provides a platform for developing
+and hosting Java or Python-based web applications.
+Google Bigtable is used for backend data storage. Microsoft¡¯s
+Windows Azure platform provides cloud services such as
+SQL Azure and SharePoint, and allows .Net framework
+applications to run on the platform. The industry-led web and
+cloud services offer unique data collection, processing, and
+analytics challenges for BI&A researchers.
+In academia, current web analytics related research encompasses
+social search and mining, reputation systems, social
+media analytics, and web visualization. In addition, webbased
+auctions, Internet monetization, social marketing, and
+web privacy/security are some of the promising research
+directions related to web analytics. Many of these emerging
+research areas may rely on advances in social network analysis,
+text analytics, and even economics modeling research.
+Network Analytics
+Network analytics is a nascent research area that has evolved
+from the earlier citation-based bibliometric analysis to include
+new computational models for online community and social
+network analysis. Grounded in bibliometric analysis, citation
+networks and coauthorship networks have long been adopted
+to examine scientific impact and knowledge diffusion. The
+h-index is a good example of a citation metric that aims to
+measure the productivity and impact of the published work of
+a scientist or scholar (Hirsch 2005). Since the early 2000s,
+network science has begun to advance rapidly with contributions
+from sociologists, mathematicians, and computer
+scientists. Various social network theories, network metrics,
+topology, and mathematical models have been developed that
+help understand network properties and relationships (e.g.,
+centrality, betweenness, cliques, paths; ties, structural holes,
+structural balance; random network, small-world network,
+scale-free network) (Barabasi 2003; Watts 2003).
+Recent network analytics research has focused on areas such
+as link mining and community detection. In link mining, one
+seeks to discover or predict links between nodes of a network.
+Within a network, nodes may represent customers, end users,
+products and/or services, and the links between nodes may
+represent social relationships, collaboration, e-mail exchanges,
+or product adoptions. One can conduct link mining using
+only the topology information (Liben-Nowell and Kleinberg
+2007). Techniques such as common neighbors, Jaccard¡¯s
+coefficient, Adamic Adar measure, and Katz measure are
+popular for predicting missing or future links. The link
+mining accuracy can be further improved when the node and
+link attributes are considered. Community detection is also an
+active research area of relevance to BI&A (Fortunato 2010).
+By representing networks as graphs, one can apply graph
+partitioning algorithms to find a minimal cut to obtain dense
+subgraphs representing user communities.
+Many techniques have been developed to help study the
+dynamic nature of social networks. For example, agent-based
+models (sometimes referred to as multi-agent systems) have
+been used to study disease contact networks and criminal or
+terrorist networks (National Research Council 2008). Such
+models simulate the actions and interactions of autonomous
+agents (of either individual or collective entities such as
+organizations or groups) with the intent of assessing their
+effects on the system as a whole. Social influence and information
+diffusion models are also viable techniques for
+studying evolving networks. Some research is particularly
+relevant to opinion and information dynamics of a society.
+Such dynamics hold many qualitative similarities to disease
+infections (Bettencourt et al. 2006). Another network
+analytics technique that has drawn attention in recent years is
+the use of exponential random graph models (Frank and
+Strauss 1986; Robins et al. 2007). ERGMs are a family of
+statistical models for analyzing data about social and other
+networks. To support statistical inference on the processes
+influencing the formation of network structure, ERGMs
+consider the set of all possible alternative networks weighted
+on their similarity to an observed network. In addition to
+studying traditional friendship or disease networks, ERGMs
+are promising for understanding the underlying network
+propertities that cause the formation and evolution of
+customer, citizen, or patient networks for BI&A.
+Most of the abovementioned network analytics techniques are
+not part of the existing commercial BI&A platforms. Significant
+open-source development efforts are underway from the
+social network analysis community. Tools such as UCINet
+(Borgatti et al. 2002) and Pajek (Batagelj and Mrvar 1998)
+have been developed and are widely used for large-scale
+network analysis and visualization. New network analytics
+tools such as ERGM have also been made available to the
+academic community (Hunter et al. 2008). Online virtual
+communities, criminal and terrorist networks, social and
+political networks, and trust and reputation networks are some
+of the promising new applications for network analytics.
+MIS Quarterly Vol. 36 No. 4/December 2012 1177
+Chen et al./Introduction: Business Intelligence Research
+Mobile Analytics
+As an effective channel for reaching many users and as a
+means of increasing the productivity and efficiency of an
+organization¡¯s workforce, mobile computing is viewed by
+respondents of the recent IBM technology trends survey (IBM
+2011) as the second most ¡°in demand¡± area for software
+development. Mobile BI was also considered by the Gartner
+BI Hype Cycle analysis as one of the new technologies that
+have the potential to drastically disrupt the BI market (Bitterer
+2011). According to eMarketer, the market for mobile ads is
+expected to explode, soaring from an estimated $2.6 billion in
+2012 to $10.8 billion in 2016 (Snider 2012).
+Mobile computing offers a means for IT professional growth
+as more and more organizations build applications. With its
+large and growing global install base, Android has been
+ranked as the top mobile platform since 2010. This open
+source platform, based on Java and XML, offers a much
+shorter learning curve and this contributes to its popularity
+with IT professionals: 70 percent of the IBM survey
+respondents planned to use Android as their mobile development
+platform, while 49 percent planned to use iOS and 35
+percent planned to use Windows 7. The ability to collect finegrained,
+location-specific, context-aware, highly personalized
+content through these smart devices has opened new possibilities
+for advanced and innovative BI&A opportunities. In
+addition to the hardware and content advantages, the unique
+apps ecosystem developed through the volunteer community
+of mobile app developers offers a new avenue for BI&A
+research. The Apple App Store alone offers more than
+500,000 apps in almost any conceivable category as of August
+2012;8
+ the number of Android apps also reached 500,000 in
+August 2012.9
+ Many different revenue models have begun to
+emerge for mobile apps, from paid or free but ad-supported
+apps to mobile gamification, which incentivizes participants
+(e.g., users or employees) by giving rewards for contributions
+(Snider 2012). For mobile BI, companies are considering
+enterprise apps, industry-specific apps, e-commerce apps, and
+social apps (in ranked order) according to the IBM survey.
+The lightweight programming models of the current web
+services (e.g., HTML, XML, CSS, Ajax, Flash, J2E) and the
+maturing mobile development platforms such as Android and
+iOS have contributed to the rapid development of mobile web
+services (e.g., HTML5, Mobile Ajax, Mobile Flash, J2ME) in
+various mobile pervasive applications, from disaster management
+to healthcare support. New mobile analytics research is
+emerging in different areas (e.g., mobile sensing apps that are
+location-aware and activity-sensitive; mobile social innovation
+for m-health and m-learning; mobile social networking
+and crowd-sourcing; mobile visualization/HCI; and personalization
+and behavioral modeling for mobile apps). In addition,
+social, behavioral, and economic models for gamification,
+mobile advertising, and social marketing are under way and
+may contribute to the development of future BI&A 3.0
+systems.
+Mapping the BI&A Knowledge
+Landscape: A Bibliometric Study of
+Academic and Industry Publications
+In an effort to better understand the current state of BI&A
+related research and identify future sources of knowledge, we
+conducted a bibliometric study analyzing relevant literature,
+major BI&A scholars, disciplines and publications, and key
+research topics. A collection, transformation, and analytics
+process was followed in the study, much like a typical BI&A
+process adopted in other applications.
+To discern research trends in BI&A, related literature from
+the past decade (2000?2011) was collected. Relevant IT
+publications were identified from several large-scale and
+reputable digital libraries: Web of Science (Thomson
+Reuters, covering more than 12,000 of the highest impact
+journals in sciences, engineering, and humanities), Business
+Source Complete (EBSCO, covering peer-reviewed business
+journals as well as non-journal content such as industry/trade
+magazines), IEEE Xplore (Institute of Electrical and Electronics
+Engineers, providing access to the IEEE digital
+library), ScienceDirect (Elsevier, covering over 2,500 journals
+from the scientific, technical, and medical literature), and
+Engineering Village (Elsevier, used to retrieve selected ACM
+conference papers because the ACM Digital Library interface
+does not support automated downloading). These sources
+contain high-quality bibliometric metadata, including journal
+name and date, author name and institution, and article title
+and abstract.
+To ensure data consistency and relevance across our collection,
+we retrieved only those publications that contained the
+keywords business intelligence, business analytics, or big
+data within their title, abstract, or subject indexing (when
+applicable). The choice of these three keywords was intended
+to focus our search and analysis on publications of direct relevance
+to our interest. However, this search procedure may
+8
+Apple ? iPhone 5 ? Learn about apps from the App store (http://www.
+apple.com/iphone/built-in-apps/app-store.html; accessed August 8, 2012).
+9
+AppBrain, Android Statistics (http://www.appbrain.com/stats/number-ofandroid-apps;
+accessed August 8, 2012).
+1178 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+Keyword
+All
+Years 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011
+Business Intelligence 3,146 113 104 146 159 229 330 346 394 352 201 334 338
+Business Analytics 213 0 5 43 4 5 2 9 6 19 16 17 126
+Big Data 243 0 1 0 0 7 4 3 26 11 41 44 95
+Total 3,602 113 110 149 163 241 336 358 426 382 358 356 560
+Figure 2. BI&A Related Publication Trend from 2000 to 2011
+also omit articles that use other BI&A relevant terms (e.g.,
+data warehousing, data mining) but not the three specific
+keywords in the title or abstract. This kind of limitation is
+common in bibliometric studies. The collected data was
+exported as XML records and parsed into a relational database
+(SQL Server) for analysis. The number of records
+initially retrieved totaled 6,187 papers. After removing duplicates,
+the number of unique records totaled 3,602.
+Figure 2 shows the statistics and growth trends of publications
+relating to the three search keywords. Overall, business intelligence
+had the largest coverage and the longest history. This
+is consistent with the evolution of BI&A, as the term BI
+appeared first in the early 1990s. In our collection, business
+analytics and big data began to appear in the literature in
+2001, but only gained much attention after about 2007. The
+business intelligence related publications numbered 3,146,
+whereas business analytics and big data publications each
+numbered only 213 and 243, respectively. While the overall
+publication trend for business intelligence remains stable,
+business analytics and big data publications have seen a faster
+growth pattern in recent years.
+Knowledge of the most popular publications, as well as prolific
+authors, is beneficial for understanding an emerging
+research discipline. Table 4 summarizes the top 20 journals,
+conferences, and industry magazines with BI&A publications.
+(The top 20 academic BI&A authors are identified in Table 6.)
+Overall, the largest source of academic business intelligence
+publications was academic conferences. The Conference on
+Business Intelligence and Financial Engineering (#1) and
+Conference on Electronic Commerce and Business Intelligence
+(#3) are specialized academic conferences devoted to
+business intelligence. One IS conference ranks #2 in the top-
+20 list: Hawaii International Conference on Systems Sciences
+(HICSS), with 370 publications.10 IEEE holds the majority of
+conferences on the list through various outlets; several are
+related to emerging technical areas, such as data mining,
+Internet computing, and cloud computing. The IEEE International
+Conference on Data Mining (ICDM) is highly
+regarded and ranks #5. ACM has two publications in the top-
+20 list: Communications of the ACM and the ACM SIGKDD
+International Conference on Knowledge Discovery and Data
+Mining. Both are well-known in CS. Again, the data mining
+community has contributed significantly to BI&A. Other
+technical conferences in CS are also contributing to BI&A in
+areas such as computational intelligence, web intelligence,
+evolutionary computation, and natural language processing,
+all of which are critical for developing future data, text, and
+web analytics techniques discussed in our research frame-
+10Two major IS conferences, ICIS (International Conference on Information
+Systems) and WITS (Workshop on Information Technologies and Systems)
+may have also published significant BI&A research; however, their collections
+are not covered in the five major digital libraries to which we have
+access and thus are not included in this analysis.
+MIS Quarterly Vol. 36 No. 4/December 2012 1179
+Chen et al./Introduction: Business Intelligence Research
+Table 4. Top Journals, Conferences, and Industry Magazines with BI&A Publications
+Top
+20 Academic Publication Publications
+Top
+20 Industry Publication Publications
+1 Conf. on Business Intelligence and Financial Engineering 531 1 ComputerWorld 282
+2 Hawaii International Conf. on Systems Sciences 370 2 Information Today 258
+3 Conf. on Electronic Commerce and Business Intelligence 252 3 InformationWeek 229
+4 International Conf. on Web Intelligence and Intelligent Agent
+Technology Workshops 151 4 Computer Weekly 199
+5 IEEE International Conf. on Data Mining 150 5 Microsoft Data Mining 108
+6 IEEE International Conf. on e-Technology, e-Commerce, and
+e-Service 129 6 InfoWorld 86
+7 IEEE Intelligent Systems 47 7 CIO 71
+8 IEEE Cloud Computing 44 8 KM World 61
+9 Decision Support Systems 39 9 CRN (formerly
+VARBusiness) 59
+10 IEEE Congress on Evolutionary Computation 39 10 Stores Magazine 56
+11 Journal of Business Ethics 34 11 Forbes 45
+12 Communications of the ACM 33 12 CRM Magazine 40
+13 European Journal of Marketing 32 13 Network World 39
+14 IEEE/ACM International Symposium on Cluster, Cloud, and
+Grid Computing 31 14 Financial Executive 37
+15 International Journal of Technology Management 29 15 Healthcare Financial
+Management 33
+16 ACM SIGKDD International Conf. on Knowledge Discovery
+and Data Mining 28 16 Chain Store Age 40
+17 International Symposium on Natural Language Processing 22 17 Strategic Finance 29
+18 IEEE Internet Computing 21 18 Traffic World 28
+19 International Conf. on Computational Intelligence and Software
+Engineering 21 19 Data Strategy 27
+20 IEEE Software 20 20 CFO 25
+work. Journals are somewhat more limited in their publication
+volume, although it is notable that the IS journal
+Decision Support Systems made the top 20 list (at #9). A few
+business school journals also contain related BI&A research
+in areas such as business ethics, marketing, and technology
+management. Other major IS publications also published
+business intelligence related articles, but at a lower rate than
+the aforementioned sources (see Table 5). Relevant sources
+from industry tend to be general IT publications, without a
+specific BI focus (e.g., ComputerWorld at #1, Information
+Today at #2, and InformationWeek at #3), as shown in
+Table 4. However, there are some focused sources as well,
+such as Microsoft Data Mining (#5), KM World (#8), and
+CRM Magazine (#12), that are more relevant to the BI&A
+related topics of data mining, knowledge management, and
+customer relation management. KM and CRM have traditionally
+been topics of interest to IS scholars.
+Table 6 summarizes the top-20 academic authors with BI&A
+publications. Most of these authors are from IS and CS, with
+several others from the related fields of marketing, management,
+communication, and mathematics. Many of these
+authors are close collaborators, for example, Hsinchun Chen
+(#1), Jay F. Nunamaker (#18), Michael Chau (#11), and
+Wingyan Chung (#18) through the University of Arizona
+connection,11 and Barabara H. Wixom (#5) and Hugh J.
+Watson (#5) through the University of Georgia connection.
+We also report the PageRank score (Brin and Page 1998), a
+popular metric for data and network analytics, for the BI&A
+authors based on the coauthorship network within BI&A
+publications. A higher PageRank score captures an author¡¯s
+propensity to collaborate with other prolific authors. The
+11Readers are welcome to contact the authors for validation of our data set
+and results or for additional analysis.
+1180 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+Table 5. Major IS Journals with BI&A Publications
+Academic Publication Publications
+Decision Support Systems 41
+Communications of the AIS 19
+Journal of Management Information Systems 12
+Management Science 10
+Information Systems Research 9
+Journal of the Association for Information Systems 5
+INFORMS Journal on Computing 4
+Management Information Systems Quarterly 2
+Table 6. Top Academic Authors in BI&A
+Rank Name Affiliation Discipline Region Total PageRank
+1 Hsinchun Chen University of Arizona, U.S. IS North America 19 7.471
+2 Shenghong Li Zhejiang University, China Math Asia 16 4.276
+3 Yong Shi University of Nebraska, U.S. CS North America 15 3.708
+4 Kin Keung Lai City University of Hong Kong, China IS Asia 14 4.780
+5 Barbara H. Wixom University of Virginia, U.S. IS North America 8 2.727
+5 Hugh J. Watson University of Georgia, U.S. IS North America 8 2.485
+5 Elizabeth Chang Curtin University, Australia IS Australia 8 2.381
+5 Sheila Wright De Montfort University, U.K. Marketing Europe 8 2.859
+5 Matteo Golfarelli University of Bologna, Italy CS Europe 8 1.785
+5 Farookh Hussain University of Technology Sydney, Australia CS Australia 8 1.264
+11 Michael Chau Hong Kong University, China IS Asia 7 1.788
+11 Josef Schiefer Vienna University of Technology, Austria CS Europe 7 2.731
+11 Craig S. Fleisher College of Costal Georgia, U.S. Management North America 7 1.042
+14 Lingling Zhang Towson University, U.S. Communication North America 6 2.328
+14 Olivera Marjanovic University of Sydney, Australia IS Australia 6 2.464
+16 Xiaofeng Zhang Changsha University of Science and
+Technology, China
+IS Asia 5 2.393
+16 Stefano Rizzi University of Bologna, Italy CS Europe 5 1.683
+18 Jay F. Nunamaker University of Arizona, U.S. IS North America 4 2.792
+18 Wingyan Chung Santa Clara University, U.S. IS North America 4 1.761
+18 Zahir Urabu Brunel University, U.K. Management Europe 4 2.241
+analysis reveals broad and even contribution of authors from
+North America, Asia, Europe, and Australia, reflecting the
+diversity and international interest in the field of BI&A.
+The last set of analyses investigated the content of BI&A
+publications from 2000?2011. Mallet (McCallum 2002), a
+Java-based open-source NLP text analytics tool, was used to
+extract the top bigrams (two-word phrases) for each year. A
+few bi-grams were combined to form more meaningful BIrelated
+trigrams such as ¡°customer relation management¡± and
+¡°enterprise resource planning.¡± These keywords were then
+ranked based on their frequency, and the top 30 keywords
+displayed using the tagcloud visualization. More important
+keywords are highlighted with larger fonts as shown in
+Figure 3. For example, competitive advantage, big data, data
+warehousing, and decision support emerged as the top four
+topics in the BI&A literature. Other BI&A related topics such
+as customer relation management, data mining, competitive
+MIS Quarterly Vol. 36 No. 4/December 2012 1181
+Chen et al./Introduction: Business Intelligence Research
+Figure 3. Tagcloud Visualization of Major Topics in the BI&A Literature
+intelligence, enterprise resource planning, and knowledge
+management were also highly ranked. Overall, the topics
+extracted were highly relevant to BI&A, especially for its
+managerial and application values, although most of the
+detailed technical terms, as described in the previous research
+framework sections, were not present. This could be attributed
+to the tendency of authors to use broad terminologies in
+article titles and abstracts.
+BI&A Education and Program
+Development
+BI&A provides opportunities not only for the research community,
+but also for education and program development. In
+July 2012, Columbia University and New York City
+announced plans to invest over $80 million dollars in a new
+Center for Data Science, which is expected to generate
+thousands of jobs and millions of dollars in tax revenues from
+100 startup companies over the next 10 years (Associated
+Press 2012). BI&A is data science in business. Job postings
+seeking data scientists and business analytics specialists
+abound these days. There is a clear shortage of professionals
+with the ¡°deep¡± knowledge required to manage the three V¡¯s
+of big data: volume, velocity, and variety (Russom 2011).
+There is also an increasing demand for individuals with the
+deep knowledge needed to manage the three ¡°perspectives¡± of
+business decision making: descriptive, predictive, and prescriptive
+analytics. In this section, we describe BI&A education
+in business schools, present the challenges facing IS
+departments, and discuss BI&A program development opportunities.
+We also provide some suggestions for the IS discipline
+in addressing these challenges (Chiang et al. 2012).
+Education Challenges
+BI&A focuses on understanding, interpretation, strategizing,
+and taking action to further organizational interests. Several
+academic disciplines have contributed to BI&A, including IS,
+CS, Statistics, Management, and Marketing, as shown in our
+bibliometric study. IS programs, in particular, are uniquely
+positioned to train a new generation of scholars and students
+due to their emphasis on key data management and information
+technologies, business-oriented statistical analysis and
+management science techniques, and broad business discipline
+exposure (e.g., Finance, Accounting, Marketing, and
+Economics).
+Since its inception approximately 45 years ago, IS as an
+academic discipline has primarily focused on business needs
+in an era when the major challenges involved the management
+of internal business and transaction data. In the age of big
+data, these problems remain, but the emphasis in industry has
+shifted to data analysis and rapid business decision making
+based on huge volumes of information. Such time-critical
+decision making largely takes place outside of the IS function
+(i.e., in business units such as marketing, finance, and
+logistics). Can IS programs serve the needs of these business
+decision makers? Can we provide courses in data mining,
+text mining, opinion mining, social media/network analytics,
+web mining, and predictive analytics that are required for
+marketing and finance majors? We should also ask ourselves
+about the skill sets needed by students. Should we recruit
+students with strong math and statistical skills, for example?
+We contend that a new vision for IS, or at least for some IS
+programs, should address these questions.
+BI&A presents a unique opportunity for IS units in business
+schools to position themselves as a viable option for edu-
+1182 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+cating professionals with the necessary depth and academic
+rigor to tackle the increased complexity of BI&A issues. IS
+programs housed within business schools have access to a
+variety of business courses, as well as courses intended to
+improve communication and presentation skills. It is also
+common for business schools to house management science
+and statistics faculty in the same IS unit.
+BI&A Knowledge and Skills
+BI&A education should be interdisciplinary and cover critical
+analytical and IT skills, business and domain knowledge, and
+communication skills required in a complex data-centric
+business environment.
+Analytical and IT skills include a variety of evolving topics.
+They are drawn from disciplines such as statistics and
+computer science for managing and analyzing both structured
+data and unstructured text. Coverage of these topics ranges
+from BI&A 1.0 to BI&A 3.0. The academic programs
+intended to produce BI&A professionals should consider
+these analytical and IT skills as suggested in Table 3 of our
+research framework.
+To provide useful insights and decision-making support, the
+BI&A professionals must be capable of understanding the
+business issues and framing the appropriate analytical solutions.
+The necessary business knowledge for BI&A professionals
+ranges from general familiarity with the areas of
+Accounting, Finance, Management, Marketing, Logistics, and
+Operation Management, to the domain knowledge required in
+specific BI&A applications, some of which are discussed
+earlier and summarized in Table 2.
+The importance of an organization-wide culture for informed
+fact-based decision making for business analytics is emphasized
+by Davenport (2006). To support such a culture, BI&A
+professionals need to know not only how to turn raw data and
+information (through analytics) into meaningful and actionable
+knowledge for an organization, but also how to properly
+interact with and communicate this knowledge to the business
+and domain experts of the organization.
+Program Development
+BI&A provides a unique opportunity for IS units in business
+schools to develop new courses, certificate programs, and
+degree programs charged with preparing the next generation
+of analytical thinkers. There are many options for delivering
+BI&A education. Because of the depth of knowledge
+required, graduate programs are the obvious choice. Viable
+program development options in delivering BI&A education
+include
+? creating a Master of Science (MS) degree in BI&A
+? creating a BI&A concentration in existing MS IS
+programs
+? offering a graduate BI&A certificate program
+The first option requires the effort of developing a new
+program. A few universities have embarked on this endeavor.
+A nonexhaustive list includes North Carolina State University,
+Saint Joseph¡¯s University, Northwestern University, the
+University of Denver, Stevens Institute of Technology, and
+Fordham University. New York University will launch its
+new program in May 2013. New MS degree programs can be
+designed explicitly to attract analytically strong students with
+undergraduate degrees in areas such as mathematics, science,
+and computer science, and to prepare these students for
+careers, not only in the IS or IT groups in industry, but also in
+functional areas such as research and development, marketing,
+media, logistics, and finance.
+The second option leverages existing MS IS programs with a
+BI&A concentration that would supplement the already
+existing curriculum in IT, data management, and business and
+communication courses with additional analytics coverage.
+This option has been adopted by a number of schools
+including the IS departments at Carnegie Mellon University
+and the University of Arizona. This option provides BI&A
+knowledge and skills for students who will primarily find
+careers in IS groups in industry.
+For working IT professionals who wish to expand into BI&A,
+a part-time MS or certificate program (the third option) offer
+practical and valid alternatives. These certificate programs
+can be delivered online or on-site and need to provide the
+skills that will complement the current IT or business experience
+of IT professionals, and/or provide technical and analytical
+skills to business professionals in non-IT areas. Online
+programs that are currently available include Northwestern
+University¡¯s MS in Predictive Analytics and Stanford University¡¯s
+Graduate Certificate on Mining Big Data. In addition,
+IS programs can help design a BI&A concentration in MBA
+programs to help train a new generation of data- and
+analytics-savvy managers.
+A key to success for a BI&A program is to integrate the
+concept of ¡°learning by doing¡± in the BI&A curriculum via
+hands-on projects, internships, and industry-guided practicum.
+Big data analytics requires trial-and-error and experimentation.
+Strong relationships and partnerships between academic
+programs and industry partners are critical to foster the
+experiential learning aspect of the BI&A curriculum.
+MIS Quarterly Vol. 36 No. 4/December 2012 1183
+Chen et al./Introduction: Business Intelligence Research
+Papers in this Special Issue
+The idea for this special issue began in May 2009, when
+Detmar Straub, the Editor-in-Chief of MIS Quarterly, solicited
+suggestions for special issues from the editorial board
+members. We submitted the special issue proposal on Business
+Intelligence Research in August 2009, with the call-forpapers
+approved and distributed at the 30th Annual International
+Conference on Information Systems (ICIS) in December
+of that year. Submissions to this special issue needed to
+relate to MIS Quarterly¡¯s mission with strong managerial,
+organizational, and societal relevance and impact. In addition
+to the Design Science approach (Hevner et al. 2004; March &
+Storey 2008), rigorous and relevant BI-related research using
+management science (modeling, optimization), information
+economics, and organizational and behavioral methodologies
+(case studies, surveys) was also welcomed. A total of 62
+manuscripts was received by October 2010. In the following
+20 months, six of the manuscripts went through three or four
+review rounds and were then accepted for this issue.
+The six papers address various aspects of the BI&A research
+framework presented in this introduction paper (see Table 7).
+All six papers are based on BI&A 1.0, with three also based
+on BI&A 2.0. The first three papers by Chau and Xu, Park et
+al., and Lau et al. focus on BI&A 2.0 with applications on ecommerce
+and market intelligence using text, web, and network
+analytics. In the next two papers, both Hu et al. and
+Abbasi et al. work in the category of BI&A 1.0 with a focus
+on security, but Hu et al. use network analytics whereas
+Abbasi et al. emphasize security analysis and data analytics.
+Finally, Sahoo et al. also work in BI&A 1.0, with direct application
+to e-commerce and market intelligence using web and
+data analytics.
+In ¡°Business Intelligence in Blogs: Understanding Consumer
+Interactions and Communities,¡± Michael Chau and Jennifer
+Xu recognized the potential ¡°gold mine¡± of blog content for
+business intelligence and developed a framework for
+gathering business intelligence by automatically collecting
+and analyzing blog content and bloggers¡¯ interaction networks.
+A system developed using this framework was
+applied to two case studies, which revealed novel patterns in
+blogger interactions and communities.
+Sung-Hyuk Park, Soon-Young Huh, Wonseok Oh, and Sang
+Pil Han in their paper, ¡°A Social Network-Based Inference
+Model for Validating Customer Profile Data,¡± argue that business
+intelligence systems are of limited value when they deal
+with inaccurate and unreliable data. The authors proposed a
+social network-driven inference framework to determine the
+accuracy and reliability of self-reported customer profiles.
+The framework utilized the individuals¡¯ social circles and
+communication patterns within their circles. To construct the
+specific inference and validation model, a combination of
+methods was used, including query processing, statistical
+inference, social network analysis, and user profiling. The
+authors analyzed over 20 million actual mobile call transactions
+and their proposed social network-based inference
+model consistently outperformed the alternative approaches.
+In ¡°Web 2.0 Environmental Scanning and Adaptive Decision
+Support for Business Mergers and Acquisitions,¡± Raymond
+Lau, Stephen Liao, K. F. Wong, and Dickson Chiu analyzed
+company mergers and acquisitions (M&A). Online environmental
+scanning with Web 2.0 provides top executives with
+opportunities to tap into collective web intelligence to develop
+better insights about the socio-cultural and political-economic
+factors that cross-border M&As face. Grounded on Porter¡¯s
+five forces model, this research designed a due diligence
+scorecard model that leverages collective web intelligence to
+enhance M&A decision making. The authors also developed
+an adaptive business intelligence (BI) 2.0 system, which they
+applied to Chinese companies¡¯ cross-border M&A activities.
+In their paper, ¡°Network-Based Modeling and Analysis of
+Systemic Risk in Banking Systems,¡± Daning Hu, J. Leon
+Zhao, Zhimin Hua, and Michael Wong analyzed systemic risk
+in banking systems by treating banks as a network linked with
+financial relationships, leading to a network approach to risk
+management (NARM). The authors used NARM to analyze
+systemic risk attributed to each individual bank via simulation
+based on real-world data from the Federal Deposit Insurance
+Corporation. NARM offered a new means by which contagious
+bank failures could be predicted and capital injection
+priorities at the individual bank level could be determined in
+the wake of a financial crisis. A simulation study showed
+that, under significant market shocks, the interbank payment
+links became more influential than the correlated bank
+portfolio links in determining an individual bank¡¯s survival.
+Ahmed Abbasi, Conan Albrecht, Anthony Vance, and James
+Hansen in their paper, ¡°MetaFraud: A Meta-Learning Framework
+for Detecting Financial Fraud,¡± employed a design
+science approach to develop MetaFraud, a meta-learning
+framework for enhanced financial fraud detection. A series
+of experiments was conducted on thousands of legitimate and
+fraudulent firms to demonstrate the effectiveness of the framework
+over existing benchmark methods. The research results
+have implications for compliance officers, investors, audit
+firms, and regulators.
+The paper by Nachiketa Sahoo, Param Vir Singh, and Tridas
+Mukhopadhyay, ¡°A Hidden Markov Model for Collaborative
+Filtering,¡± reports on the analysis of making personalized
+recommendations when user preferences are changing. The
+1184 MIS Quarterly Vol. 36 No. 4/December 2012
+Chen et al./Introduction: Business Intelligence Research
+Table 7. Summary of Special Issue Papers Within the BI&A Research Framework
+Authors and Titles Evolutions Applications Data Analytics/ Research Impacts
+Chau and Xu, ¡°Business
+Intelligence in Blogs: Understanding
+Consumer Interactions
+and Communities¡±
+BI&A 2.0 on
+social media
+& network
+analytics
+Market intelligence
+on consumers and
+communities
+User-generated
+content extracted
+from blogs
+? Text and network
+analytics
+? Community detection
+? Network visualization
+Increased sales
+and customer
+satisfaction
+Park et al., ¡°A Social
+Network-Based Inference
+Model for Validating
+Customer Profile Data¡±
+BI&A 1.0 &
+2.0 on social
+network
+analysis and
+statistical
+analysis
+Market intelligence
+in predicting customers¡¯
+profiles
+Self-reported user
+profiles and mobile
+call records
+? Network analytics
+? Anomaly detection
+? Predictive analytics
+Personalized
+recommendation
+and increased
+customer
+satisfaction
+Lau et al., ¡°Web 2.0
+Environmental Scanning and
+Adaptive Decision Support
+for Business Mergers and
+Acquisitions¡±
+BI&A 1.0 and
+2.0 on
+scorecards
+and web
+analytics
+Market intelligence
+on environmental
+scanning
+Business information
+extracted from
+Internet and
+proprietary financial
+information
+? Text and web analytics
+? Sentiment and affect
+analysis
+? Relation mining
+Strategic decision
+making in
+mergers and
+acquisitions
+Hu et al., ¡°Network-Based
+Modeling and Analysis of
+Systemic Risk in Banking
+Systems¡±
+BI&A 1.0 on
+statistical
+analysis
+Systemic risk
+analysis and
+management in
+banking systems
+U.S. banking information
+extracted from
+FDIC and Federal
+Reserve Wire
+Network
+? Network and data
+analytics
+? Descriptive and
+predictive modeling
+? Discrete event simulation
+Monitoring and
+mitigating of
+contagious bank
+failures
+Abbasi et al., ¡°MetaFraud: A
+Meta-Learning Framework
+for Detecting Financial
+Fraud¡±
+BI&A 1.0 on
+data mining
+and metalearning
+
+Fraud detection Financial ratios, and
+organizational and
+industrial-level context
+features
+? Data analytics
+? Classification &
+generalization
+? Adaptive learning
+Financial fraud
+detection
+Sahoo et al., ¡°A Hidden
+Markov Model for Collaborative
+Filtering¡±
+BI&A 1.0 on
+statistical
+analysis
+Recommender systems
+with changing
+user preferences
+Blog reading data,
+Netflix prize data set,
+and Last.fm data
+? Data and web analytics
+? Statistical dynamic model
+? Collaborative filtering
+Personalized
+recommendations
+authors proposed a hidden Markov model based on collaborative
+filtering to predict user preferences and make the most
+appropriate personalized recommendations for the predicted
+preference. The authors employed real world data sets and
+simulations to show that, when user preferences are changing,
+there is an advantage to using the proposed algorithm over
+existing ones.
+Summary and Conclusions
+Through BI&A 1.0 initiatives, businesses and organizations
+from all sectors began to gain critical insights from the
+structured data collected through various enterprise systems
+and analyzed by commercial relational database management
+systems. Over the past several years, web intelligence, web
+analytics, web 2.0, and the ability to mine unstructured usergenerated
+contents have ushered in a new and exciting era of
+BI&A 2.0 research, leading to unprecedented intelligence on
+consumer opinion, customer needs, and recognizing new
+business opportunities. Now, in this era of Big Data, even
+while BI&A 2.0 is still maturing, we find ourselves poised at
+the brink of BI&A 3.0, with all the attendant uncertainty that
+new and potentially revolutionary technologies bring.
+This MIS Quarterly Special Issue on Business Intelligence
+Research is intended to serve, in part, as a platform and
+conversation guide for examining how the IS discipline can
+better serve the needs of business decision makers in light of
+maturing and emerging BI&A technologies, ubiquitous Big
+Data, and the predicted shortages of data-savvy managers and
+of business professionals with deep analytical skills. How
+can academic IS programs continue to meet the needs of their
+traditional students, while also reaching the working IT
+professional in need of new analytical skills? A new vision
+for IS may be needed to address this and other questions.
+By highlighting several applications such as e-commerce,
+market intelligence, e-government, healthcare, and security,
+and by mapping important facets of the current BI&A
+knowledge landscape, we hope to contribute to future sources
+of knowledge and to augment current discussions on the
+importance of (relevant) academic research.
+MIS Quarterly Vol. 36 No. 4/December 2012 1185
+Chen et al./Introduction: Business Intelligence Research
+Finally, the six papers chosen for this special issue are themselves
+a microcosm of the current state of BI&A research.
+These ¡°best of the best¡± research papers showcase how highquality
+academic research can address real-world problems
+and contribute solutions that are relevant and long lasting?
+exactly the challenge that our discipline continues to face.
+Acknowledgments
+We wish to thank the Editor-in-Chief of MIS Quarterly, Detmar
+Straub, for his strong support for this special issue from its inception.
+He shared the belief that business intelligence and analytics is
+an emerging and critical IS research area. We appreciate the
+continued support from the incoming Editor-in-Chief, Paulo Goes,
+and his feedback on an earlier version of this paper. We also thank
+Janice DeGross and Jennifer Syverson from the MIS Quarterly
+office for their professional editorial support and Cathy Larson for
+her support and assistance in managing the manuscripts and
+coordinating the review process.
+We are grateful to our excellent group of 35 associate editors (listed
+below) and the reviewers (too numerous to name) who carried out
+the review process in a timely manner while still meeting MIS
+Quarterly's high expectations of scholarly quality. We thank the
+authors of these 62 submissions who chose to submit their research
+to our special issue. We are especially indebted to the associate
+editors who handled the six accepted papers of the special issue.
+They and the reviewers they invited offered valuable critiques and
+suggestions throughout the review process. This special issue would
+not have been possible without their efforts.
+The research reported in this article was partially supported by the
+following sources: National Science Foundation (NSF CMMI-
+1057624, CMMI-0926270, CNS-0709338), Defense Threat Reduction
+Agency (DTRA HDTRA-09-0058), J. Mack Robinson College
+of Business at the Georgia State University, Carl H. Lindner College
+of Business at the University of Cincinnati, and the Eller College of
+Management at the University of Arizona. We also thank the
+following colleagues for their assistance or comments: Ee-Peng
+Lim, Ted Stohr, Barbara Wixom, Yukai Lin, and Victor Benjamin.
